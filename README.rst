@@ -24,3 +24,12 @@ Including ``Laiz.php`` and invoke ``laze`` method to run framework::
    require_once 'path_to_laiz/Laiz.php';
    Laiz::laze();
 
+Adding template file of top page::
+
+   mkdir -p components/Base/templates
+   echo 'Hello World!' > components/Base/templates/Top.html
+
+Adding template files with action::
+
+   TODO
+
