@@ -10,8 +10,16 @@ Current is a development version.
 
 Usage
 =====
+Adding ``compiled`` directory in project directory::
+
+   cd project_dir
+   mkdir compiled
+   chmod o+w compiled
+
 Including ``Laiz.php`` and invoke ``laze`` method to run framework::
 
+   mkdir htdocs
+   cat > htdocs/index.php
    <?php
    require_once 'path_to_laiz/Laiz.php';
    Laiz::laze();
