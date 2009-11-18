@@ -21,7 +21,7 @@ abstract class Laiz_Action_Config_Simple implements Laiz_Action_Config
     protected $classes = array();
     protected $PATH_INFO_ACTION = 1;
     protected $DEFAULT_ACTION = 'Top';
-    protected $ACTION_METHOD = 'execute';
+    protected $ACTION_METHOD = 'act';
     static public $continueBase = true;
 
     protected function getMatchString()
