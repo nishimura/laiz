@@ -7,7 +7,6 @@
  * @package    Laiz
  * @author     Satoshi Nishimura <nishim314@gmail.com>
  * @copyright  2005-2009 Satoshi Nishimura
- * @license    http://opensource.org/licenses/bsd-license.php The BSD License
  */
 
 /**
