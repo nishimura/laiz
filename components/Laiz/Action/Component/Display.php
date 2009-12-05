@@ -15,7 +15,7 @@
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Laiz_Action_Component_Filter implements Laiz_Action_Component
+class Laiz_Action_Component_Display implements Laiz_Action_Component
 {
     /** @var array */
     private $config = array();
@@ -30,7 +30,7 @@ class Laiz_Action_Component_Filter implements Laiz_Action_Component
     private $req;
 
     /** @var int */
-    private $priority = 100;
+    private $priority = 300;
 
     public function __construct(Laiz_Container $container, Laiz_Parser $parser
                                 , Laiz_Request $req)
@@ -52,7 +52,7 @@ class Laiz_Action_Component_Filter implements Laiz_Action_Component
             if (strlen(trim($val)) === 0)
                 continue;
 
-            $method = 'filter';
+            $method = 'display';
             $priority = $this->priority++;
 
             if (strpos($val, '.')){
@@ -69,7 +69,7 @@ class Laiz_Action_Component_Filter implements Laiz_Action_Component
             $this->req->setRequestsByPathInfo($thisConfig);
             $this->req->setPropertiesByRequest($obj);
             // ==check== unused thisConfigs
-            $a = new Laiz_Action_Executable_Simple($obj, $method, $thisConfig);
+            $a = new Laiz_Action_Display_Simple($obj, $method, $thisConfig);
             $this->container->registerInterface($a, $priority);
         }
     }

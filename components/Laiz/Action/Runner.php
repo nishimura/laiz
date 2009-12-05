@@ -57,7 +57,7 @@ class Laiz_Action_Runner
             $countForWildCard++;
             $obj = $e->getClass();
 
-            // 前のアクションでLaiz_Requestに入れた値もインジェクションする
+            // Injection of added args to request in pre-action
             $this->request->setPropertiesByRequest($obj);
 
             $ret = $this->container->execMethod($obj, $e->getMethod());
@@ -65,7 +65,7 @@ class Laiz_Action_Runner
                 break;
         }
 
-        // 最後にmatchして取得した アクションの $config を利用する
+        // use config last matched and got
         $last = count($executables) === $countForWildCard;
         if (!$ret){
             if ($last && isset($config['result']['*']))
