@@ -114,15 +114,20 @@ class Laiz_Session_LoginManager{
 
     /**
      *
-     * @param string $dsn
-     * @param string $path
      * @param int $expire
+     * @param string $path
+     * @param string $dsn
      * @return array(bool, bool, int) startNow?, isLogined?, userId
      */
-    public function autoLogin($dsn, $path = '/', $expire = 604800){
+    public function autoLogin($expire = 604800, $path = '/', $dsn = null){
         // First argument is dsn, not PDO object.
         // PDO object doesn't need in alot of cases.
         $userId = 0;
+
+        if ($dsn === null){
+            $configs = Laiz_Configure::get('Laiz_View');
+            $dsn = 'sqlite:'.$configs['FLEXY_COMPILE_DIR'].'userlogin.sq3';
+        }
 
         $data = array();
         // Return when session is started.
@@ -131,6 +136,19 @@ class Laiz_Session_LoginManager{
 
         if (!empty($_COOKIE[self::COOKIE_KEY])){
             $pdo = new PDO($dsn);
+
+            // check table
+            $tablesQuery = 'select name from sqlite_master where type=\'table\' and name = \'auto_login\'';
+            $stmt = $pdo->query($tablesQuery);
+            if (!$stmt || $stmt->columnCount() === 0){
+                $stmt = null;
+                $ret = $pdo->exec('CREATE TABLE auto_login(user_id, key, expire, data)');
+                if (!$ret){
+                    trigger_error(E_USER_WARNING, 'Cannot create auto login table.');
+                    return array(false, false, null);
+                }
+            }
+
             $sql = 'select * from auto_login where key = '
                 . $pdo->quote($_COOKIE[self::COOKIE_KEY]) . ' and expire > '
                 . $pdo->quote(date('Y-m-d H:i:s')) . ';';
