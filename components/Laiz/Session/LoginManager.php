@@ -170,7 +170,10 @@ class Laiz_Session_LoginManager{
         return $this->session->get(self::USER_ID_KEY);
     }
 
-    public function logout(PDO $pdo, $path = '/'){
+    public function logout($dsn = null, $path = '/'){
+        $dsn = $dsn ? $dsn : $this->createDsn();
+        $pdo = new PDO($dsn);
+
         $this->session->add(self::LOGINED_KEY, false);
 
         $this->cleanupAutoLogin($pdo, $path);
