@@ -241,7 +241,7 @@ class Laiz_Db_Orm_Pdo implements Laiz_Db_Orm{
 
         // parse and write
         foreach ($tables as $table){
-            // プライマリキーの読み取り
+            // read primary key
             $pKeys = $this->dao->getMetaPrimaryKeys($table);
             if (is_array($pKeys) && count($pKeys) == 1){
                 $pKey = ':' . $pKeys[0];

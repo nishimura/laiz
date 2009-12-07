@@ -44,6 +44,43 @@ class Laiz_Session_LoginManager{
         $this->session = $sess;
     }
 
+    public function createDsn()
+    {
+        $configs = Laiz_Configure::get('Laiz_View');
+        $dsn = 'sqlite:'.$configs['FLEXY_COMPILE_DIR'].'userlogin.sq3';
+        return $dsn;
+    }
+
+    /**
+     * login process
+     *
+     * @author Satoshi Nishimura <nishim314@gmail.com>
+     * @return bool
+     */
+    public function login(Laiz_Session_LoginChecker $checker,
+                          $user, $pass, $auto,
+                          $expire = null, $dsn = null, $path = null)
+    {
+        if (!$checker->login($user, $pass))
+            return false;
+
+        $expire = $expire !== null ? $expire : 3600*24*7;
+
+        $dsn = $dsn ? $dsn : $this->createDsn();
+        $pdo = new PDO($dsn);
+
+        $path = $path ? $path : '/';
+
+        if ($auto)
+            $this->setupAutoLogin($pdo, $user, $pass, $expire);
+        else
+            $this->cleanupAutoLogin($pdo, $path);
+
+        $this->setLogined();
+        return true;
+    }
+
+
     /**
      *
      * @param PDO $pdo
@@ -124,10 +161,7 @@ class Laiz_Session_LoginManager{
         // PDO object doesn't need in alot of cases.
         $userId = 0;
 
-        if ($dsn === null){
-            $configs = Laiz_Configure::get('Laiz_View');
-            $dsn = 'sqlite:'.$configs['FLEXY_COMPILE_DIR'].'userlogin.sq3';
-        }
+        $dsn = $dsn ? $dsn : $this->createDsn();
 
         $data = array();
         // Return when session is started.
