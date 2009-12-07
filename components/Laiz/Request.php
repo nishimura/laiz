@@ -10,7 +10,7 @@
  */
 
 /**
- * HTTP Request管理クラス
+ * HTTP Request Management Class.
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
@@ -18,9 +18,9 @@
 class Laiz_Request{
 
     /**
-     * @var array $param リクエスト情報を格納する配列
+     * @var array $param Store request value.
      */
-    var $params = array();
+    private $params = array();
 
     private $ACTION_KEY;
     private $PATH_INFO_ACTION;
@@ -28,7 +28,7 @@ class Laiz_Request{
     private $actionName;
 
     /**
-     * GET, POST の変数データと REQUEST_METHOD をメンバ変数に代入
+     * Store GET, POST and REQUEST_METHOD value.
      * @access public
      */
     function __construct(){
@@ -42,7 +42,7 @@ class Laiz_Request{
     }
 
     /**
-     * アクションに使うリクエストキー名を登録する
+     * Store action key.
      *
      * @param string $name
      */
@@ -52,7 +52,7 @@ class Laiz_Request{
     }
 
     /**
-     * 変数(オブジェクト)をリクエスト変数に追加
+     * Add variable.
      *
      * @param string $name
      * @param mixed $data
@@ -63,7 +63,7 @@ class Laiz_Request{
     }
 
     /**
-     * リクエスト変数の名前から値を返却
+     * Return variable.
      *
      * @param string $name
      * @return mixed
@@ -78,7 +78,7 @@ class Laiz_Request{
     }
 
     /**
-     * 全リクエスト変数を配列で返却
+     * Return all variable.
      *
      * @return mixed
      * @access public
@@ -88,7 +88,7 @@ class Laiz_Request{
     }
 
     /**
-     * PATH_INFOの何番目をアクション変数とするかを設定する
+     * Variables of PATH_INFO how many is made for Action is specified.
      *
      * @param int $num
      */
@@ -99,7 +99,8 @@ class Laiz_Request{
     }
 
     /**
-     * PATH_INFOの何番目をアクション変数とするかを返却する
+     * Return number of Action for PATH_INFO.
+     * 
      * @return int
      */
     public function getPathInfoAction()
@@ -108,7 +109,7 @@ class Laiz_Request{
     }
 
     /**
-     * アクション名を初期化して設定する
+     * Initialize action name.
      *
      * @access public
      */
@@ -117,7 +118,7 @@ class Laiz_Request{
             $action = $this->params[$this->ACTION_KEY];
 
         }elseif (isset($_SERVER['PATH_INFO'])){
-            // PATH_INFOをアクションとして解釈
+            // parse PATH_INFO as action
             $requests = explode('/', $_SERVER['PATH_INFO']);
             if (isset($requests[$this->PATH_INFO_ACTION])
                 && strlen(trim($requests[$this->PATH_INFO_ACTION])) > 0){
@@ -140,7 +141,7 @@ class Laiz_Request{
     }
 
     /**
-     * アクション名を返却する
+     * Return action name.
      *
      * @return string
      */
@@ -162,15 +163,15 @@ class Laiz_Request{
     }
 
     /**
-     * クラスプロパティにリクエスト変数を設定
+     * Set class property by request.
      *
-     * @param Object $class 解析するオブジェクト
+     * @param Object $class
      * @access public
      */
     function setPropertiesByRequest($class){
         $properties = get_object_vars($class);
         foreach ($properties as $property => $var){
-            // Requestから_以外で始まる変数をセット
+            // not include variable that starts underscore
             if (preg_match('/^([^_].*)/', $property, $matches)){
                 $value = $this->get($matches[1]);
 
@@ -181,6 +182,4 @@ class Laiz_Request{
         }
 
     }
-
-
 }

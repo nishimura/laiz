@@ -136,12 +136,12 @@ class Laiz_Container
             if (in_array($interface, $this->ignoreInterfaces))
                 continue;
 
-            $priority = $this->getUnusedPriority($component, $interface, $priority);
+            $p = $this->getUnusedPriority($component, $interface, $priority);
             // 既に登録済みの場合はパスする
-            if ($priority === false)
+            if ($p === false)
                 continue;
 
-            $this->interfaces[$interface][$priority] = $component;
+            $this->interfaces[$interface][$p] = $component;
             if (isset($this->sortCounter[$interface]))
                 $this->sortCounter[$interface]++;
             else
@@ -365,9 +365,9 @@ class Laiz_Container
     private function getUnusedPriority($component, $interface, $priority)
     {
         if (isset($this->interfaces[$interface][$priority])){
-            if ($this->interfaces[$interface][$priority] === $component)
+            if ($this->interfaces[$interface][$priority] === $component){
                 return false;
-            else
+            }else
                 return $this->getUnusedPriority($component, $interface, $priority + 1);
         }else{
             return $priority;

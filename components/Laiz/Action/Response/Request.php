@@ -1,6 +1,6 @@
 <?php
 /**
- * File of class for merging action configration.
+ * File of Laiz_Request setting class.
  *
  * PHP versions 5
  *
