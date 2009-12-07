@@ -51,6 +51,28 @@ class Laiz_Session_LoginManager{
         return $dsn;
     }
 
+    private function initDatabase($pdo)
+    {
+        // check table
+        $tablesQuery = 'select name from sqlite_master where type=\'table\' and name = \'auto_login\'';
+        $stmt = $pdo->query($tablesQuery);
+        if ($stmt)
+            $row = $stmt->fetch();
+        if (!$stmt || !isset($row['name']) || $row['name'] !== 'auto_login'){
+            $stmt = null;
+            $ret = $pdo->exec('CREATE TABLE auto_login(user_id, key, expire, data)');
+
+            $info = $pdo->errorInfo();
+            if ($info[0] !== '00000'){
+                trigger_error('Failed to start session of auto login: ['
+                              . $info[0] . '] ' . $info[2], E_USER_WARNING);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * login process
      *
@@ -88,17 +110,22 @@ class Laiz_Session_LoginManager{
      * @param string $path cookie's path
      */
     public function setupAutoLogin(PDO $pdo, $userId, $path = '/', $expire = 604800){
+        if (!$this->initDatabase($pdo)){
+            trigger_error('Cannot create auto login table.', E_USER_WARNING);
+            return false;
+        }
+
         // register information of cookie to database.
         $loginKey = sha1(uniqid().mt_rand());
-        $sql = "insert into auto_login(user_id, key, expire, data) values ("
+        $sql = "insert into auto_login(user_id, key, expire) values ("
             . $pdo->quote($userId) . ', '
             . $pdo->quote($loginKey) . ', '
-            . $pdo->quote(date('Y-m-d H:i:s', time()+$expire)) . ', '
-            . $pdo->quote(serialize($_SESSION)) . ')';
+            . $pdo->quote(date('Y-m-d H:i:s', time()+$expire)) . ')';
+        // TODO: insert data => $_SESSION
         $ret = $pdo->exec($sql);
 
-        if ($ret !== 1){
-            $info = $pdo->errorInfo();
+        $info = $pdo->errorInfo();
+        if ($info[0] !== '00000'){
             trigger_error('Failed to start session of auto login: ['
                           . $info[0] . '] ' . $info[2], E_USER_WARNING);
             return false;
@@ -171,16 +198,9 @@ class Laiz_Session_LoginManager{
         if (!empty($_COOKIE[self::COOKIE_KEY])){
             $pdo = new PDO($dsn);
 
-            // check table
-            $tablesQuery = 'select name from sqlite_master where type=\'table\' and name = \'auto_login\'';
-            $stmt = $pdo->query($tablesQuery);
-            if (!$stmt || $stmt->columnCount() === 0){
-                $stmt = null;
-                $ret = $pdo->exec('CREATE TABLE auto_login(user_id, key, expire, data)');
-                if (!$ret){
-                    trigger_error(E_USER_WARNING, 'Cannot create auto login table.');
-                    return array(false, false, null);
-                }
+            if (!$this->initDatabase($pdo)){
+                trigger_error('Cannot create auto login table.', E_USER_WARNING);
+                return array(false, false, null);
             }
 
             $sql = 'select * from auto_login where key = '
