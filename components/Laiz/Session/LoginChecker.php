@@ -21,7 +21,7 @@ interface Laiz_Session_LoginChecker{
      *
      * @param string $user
      * @param string $pass
-     * @return bool
+     * @return userId need return user id for insert session database
      * @access public
      */
     public function login($user, $pass);

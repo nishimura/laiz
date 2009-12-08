@@ -83,7 +83,7 @@ class Laiz_Session_LoginManager{
                           $user, $pass, $auto,
                           $expire = null, $dsn = null, $path = null)
     {
-        if (!$checker->login($user, $pass))
+        if (!$id = $checker->login($user, $pass))
             return false;
 
         $expire = $expire !== null ? $expire : 3600*24*7;
@@ -94,7 +94,7 @@ class Laiz_Session_LoginManager{
         $path = $path ? $path : '/';
 
         if ($auto)
-            $this->setupAutoLogin($pdo, $user, $pass, $expire);
+            $this->setupAutoLogin($pdo, $id, $path, $expire);
         else
             $this->cleanupAutoLogin($pdo, $path);
 
