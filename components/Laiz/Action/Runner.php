@@ -115,7 +115,7 @@ class Laiz_Action_Runner
      * @param string $actionName
      * @param string $method
      *
-     * @return string
+     * @return array component's config
      */
     public function parse($actionName, $method)
     {
@@ -153,7 +153,8 @@ class Laiz_Action_Runner
             return $configs;
 
         // creation action object and setting
-        $obj = $this->container->create($className);
+        $obj = new $className();
+        $this->container->initClass($obj, $configs);
         $a = new Laiz_Action_Executable_Simple($obj, $method);
         $priority = $this->container->getPriority(get_class($this));
         $this->container->registerInterface($a, $priority);
