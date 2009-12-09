@@ -79,6 +79,11 @@ class Laiz_Action_Runner
                          'view' => $viewName);
         }
 
+        if (preg_match('/^redirect:/', $ret)){
+            $redirect = str_replace('redirect:', '', $ret);
+            header("Location: $redirect");
+        }
+
         if (preg_match('/^action:/', $ret)){
             return $this->clean()->run(str_replace('action:', '', $ret));
         }
