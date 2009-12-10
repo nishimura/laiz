@@ -44,11 +44,22 @@ class Laiz_Controller
         $ret = $actionRunner->run($actionName);
 
         // run display filter
+        // TODO: separate class
         $displays = $container->getComponents('Laiz_Action_Display');
+        $displayResult = array();
         foreach ($displays as $a){
             $obj = $a->getClass();
             $req->setPropertiesByRequest($obj);
-            $container->execMethod($obj, $a->getMethod());
+            $displayResult[] = $container->execMethod($obj, $a->getMethod());
+        }
+        foreach ($displayResult as $r){
+            switch ($r){
+            case 'none':
+                return;
+
+            default:
+                break;
+            }
         }
 
         // run view
