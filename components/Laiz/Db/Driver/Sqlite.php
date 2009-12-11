@@ -7,7 +7,6 @@
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  * @copyright 2009 Satoshi Nishimura
- * @version   Subversion: $Id$
  */
 
 /**
