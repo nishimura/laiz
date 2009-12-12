@@ -19,6 +19,10 @@ class Laiz_Autoload
 {
     static public function autoload($name)
     {
+        // for Fly_Flexy
+        if (preg_match('/^Fly_Flexy_/', $name))
+            return;
+
         $file = str_replace('_', '/', $name) . '.php';
         include_once $file;
     }

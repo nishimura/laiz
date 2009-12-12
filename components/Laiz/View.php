@@ -140,8 +140,9 @@ abstract class Laiz_View
         $config = Laiz_Configure::get('base');
         $projectBase = $config['PROJECT_BASE_DIR'] . 'components/';
 
-        $dirs = array($frameworkBase . $dir . '/',
-                      $projectBase . $dir . '/');
+        $dirs = array($projectBase . $dir . '/',
+                      $frameworkBase . $dir . '/');
+                      
         $this->TEMPLATE_DIR = $dirs;
     }
 

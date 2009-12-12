@@ -105,8 +105,7 @@ class Laiz_View_Flexy extends Laiz_View
                          'multiSource' => true,
                          'compileDir'  => $this->FLEXY_COMPILE_DIR,
                          'numberFormat' => ', 0',
-                         'forceCompile' => $this->FLEXY_FORCE_COMPILE,
-                         'compiler'     => 'FlexyEx');
+                         'forceCompile' => $this->FLEXY_FORCE_COMPILE);
         // ユーザ独自の設定
         if ($this->_flexyOptions){
             $options = array_merge($options, $this->_flexyOptions);
@@ -115,10 +114,10 @@ class Laiz_View_Flexy extends Laiz_View
         $rep = error_reporting();
         error_reporting($rep & E_ALL); // PEARの関係上Strictエラーを除外する
         
-        $this->flexy = new HTML_Template_Flexy($options);
+        $this->flexy = new Fly_Flexy($options);
 
         // Hidden値の設定
-        $this->flexy->setHiddens($this->_hiddens);
+        //$this->flexy->setHiddens($this->_hiddens);
 
         $this->flexy->compile($templateName);
         $this->_elements = $this->flexy->getElements();
