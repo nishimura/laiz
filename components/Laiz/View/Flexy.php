@@ -146,14 +146,7 @@ class Laiz_View_Flexy extends Laiz_View
 
             // アンダースコア以外で始まる変数を設定する
             foreach ($properties as $key => $value){
-                if (is_object($value) && preg_match('/^_laizVo/', $key)){
-                    // _laizVoで始まる変数にオブジェクトが設定されている場合は展開する
-                    $voProperties = get_object_vars($value);
-                    foreach ($voProperties as $key => $value){
-                        $this->_obj->$key = $value;
-                    }
-
-                }else if (!preg_match('/^_/', $key)){
+                if (!preg_match('/^_/', $key)){
                     // 通常の変数
                     $this->_obj->$key = $class->$key;
                 }
