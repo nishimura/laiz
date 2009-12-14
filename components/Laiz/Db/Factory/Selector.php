@@ -17,7 +17,7 @@
  */
 class Laiz_Db_Factory_Selector implements Laiz_Db_Factory
 {
-    private $config;
+    protected $config;
 
     public function __construct()
     {
