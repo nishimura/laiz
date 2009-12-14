@@ -1,0 +1,18 @@
+変更点
+Fly/Flexy.php
+ディレクトリトラバーサル対策を少しいれた
+マルチソースオプションを削除し、設定されたテンプレートパスの中から、最初に見つかったものを使用するようにした
+コンパイル用ディレクトリが見つからない場合に、session save pathを使用する設定になっているが、
+ゴミを削除できなくなるリスクもあるので、エラーを返すことにする。
+outputObjectでのerror_reportingのリストアに関するバグを修正
+
+Fly/Flexy/Token.php
+factory内での、ディレクトリトラバーサル対策と、無駄にnewしている部分を節約した
+
+FLy/Flexy/Tokenizer.lex
+メソッドチェーンに対応できるようにロジックを修正
+
+Fly/Flexy/Compiler/Flexy.php
+stringToMethod stringToMethodChainを中心にメソッドチェーン対応を追加
+
+全般、PHP5のE_STRICTに対応
