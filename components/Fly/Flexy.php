@@ -289,14 +289,14 @@ class Fly_Flexy
         }
 
         if (! is_dir($compileDest) || ! is_writeable($compileDest)) {
-            require_once 'Fly_System.php';
+            require_once 'Fly/System.php';
             System::mkdir(array('-p' , $compileDest));
         }
         if (! is_dir($compileDest) || ! is_writeable($compileDest)) {
             return $this->raiseError("can not write to 'compileDir', which is <b>'$compileDest'</b><br>" . "Please give write and enter-rights to it", FLY_FLEXY_ERROR_FILE, FLY_FLEXY_ERROR_DIE);
         }
         if (! file_exists(dirname($this->compiledTemplate))) {
-            require_once 'Fly_System.php';
+            require_once 'Fly/System.php';
             System::mkdir(array('-p' , '-m' , 0770 , dirname($this->compiledTemplate)));
         }
         // Compile the template in $file.
