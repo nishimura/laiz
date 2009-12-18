@@ -140,7 +140,7 @@ class Laiz_Validator_Filter
                 $ret = $this->validate($varName, $checkedVars, $stopper, $func, $errMsgName, $msg);
 
                 if ($ret && $commonErrorMessage){
-                    $this->request->add($commonErrorKey, $commonErrorMessage);
+                    $this->response->set($commonErrorKey, $commonErrorMessage);
                 }
                 if ($ret === 'stop'){
                     return $result;
