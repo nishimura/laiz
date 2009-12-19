@@ -38,9 +38,10 @@ abstract class Laiz_View
     protected $OUTPUT_404_HEADER;
     protected $TEMPLATE_EXTENSION;
     protected $OUTPUT_TEMPLATE_ERROR;
+    protected $templatePrefix = '';
+    protected $templateSuffix = '';
     public function init($args){
         // ビュー共通設定
-        $this->TEMPLATE_DIR        = $args['TEMPLATE_DIR'];
         $this->VIEW_LAYERING       = $args['VIEW_LAYERING'];
         $this->ERROR_TEMPLATE      = $args['ERROR_TEMPLATE'];
         $this->OUTPUT_404_HEADER   = $args['OUTPUT_404_HEADER'];
@@ -67,10 +68,10 @@ abstract class Laiz_View
      */
     public function execute($actionName){
         // テンプレート名の取得
-        $templateName = $this->_getTemplateName($actionName);
+        $templateName = $this->getTemplateName($actionName);
 
         // テンプレートの設定
-        $this->_setTemplate($templateName);
+        $this->parseTemplate($templateName);
 
         // 変数の設定
         $this->_setVariables();
@@ -85,7 +86,7 @@ abstract class Laiz_View
      * @param string $templateName
      * @access protected
      */
-    abstract protected function _setTemplate($templateName);
+    abstract protected function parseTemplate($templateName);
 
     /**
      * 変数設定の抽象メソッド
@@ -140,9 +141,11 @@ abstract class Laiz_View
         $config = Laiz_Configure::get('base');
         $projectBase = $config['PROJECT_BASE_DIR'] . 'components/';
 
-        $dirs = array($projectBase . $dir . '/',
-                      $frameworkBase . $dir . '/');
-                      
+        $dirs = array();
+        foreach ((array)$dir as $d)
+            $dirs[] = $projectBase . $d . '/';
+        $dirs[] = dirname(__FILE__) . '/Base/templates/';
+
         $this->TEMPLATE_DIR = $dirs;
     }
 
@@ -151,12 +154,8 @@ abstract class Laiz_View
      * @return string
      * @access protected
      */
-    protected function _getTemplateName($actionName){
-        if ($this->_template){
-            $templateName = $this->parseTemplatePath($this->_template.$this->getTemplateExtension());
-        }else{
-            $templateName = $this->parseTemplatePath($actionName . $this->getTemplateExtension());
-        }
+    private function getTemplateName($actionName){
+        $templateName = $this->parseTemplatePath($this->templatePrefix . $actionName . $this->templateSuffix . $this->getTemplateExtension());
 
         $fileExists = false;
         foreach ((array)$this->TEMPLATE_DIR as $dir){
@@ -174,7 +173,6 @@ abstract class Laiz_View
 
             if ($this->OUTPUT_TEMPLATE_ERROR)
                 trigger_error("Template [$templateName] not found in " . join(PATH_SEPARATOR, (array)$this->TEMPLATE_DIR), E_USER_NOTICE);
-            $this->setTemplateDir('Base/templates'); // ==check== better change variable
             $templateName = $this->ERROR_TEMPLATE;
         }
 
@@ -255,19 +253,16 @@ abstract class Laiz_View
     /**
      * 出力を返却
      *
-     * @param string $templateName
+     * @param string $actionName
      * @return string
      * @access public
      */
-    public function bufferedOutput($templateName){
-        // テンプレートの登録
-        $this->setTemplate($templateName);
-        
+    public function bufferedOutput($actionName){
         // テンプレート名の取得
-        $templateName = $this->_getTemplateName('');
+        $templateName = $this->getTemplateName($actionName);
 
         // テンプレートの設定
-        $this->_setTemplate($templateName);
+        $this->parseTemplate($templateName);
 
         // 変数の設定
         $this->_setVariables();
@@ -278,22 +273,15 @@ abstract class Laiz_View
 
     abstract protected function _bufferedOutput();
 
-    /**
-     * 404 NotFound出力
-     *
-     * @param string $msg
-     * @access public
-     */
-    public function outputNotFound($msg = 'outputNotFound'){
-        if ($this->OUTPUT_404_HEADER){
-            header('HTTP/1.0 404 Not Found');
-        }
+    public function setTemplatePrefix($prefix)
+    {
+        $this->templatePrefix = $prefix;
+        return $this;
+    }
 
-        if ($this->OUTPUT_TEMPLATE_ERROR)
-            trigger_error($msg, E_USER_NOTICE);
-        
-        $this->_setTemplate($this->ERROR_TEMPLATE);
-        $this->output();
+    public function setTemplateSuffix($suffix)
+    {
+        $this->templateSuffix = $suffix;
+        return $this;
     }
 }
-

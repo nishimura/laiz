@@ -44,7 +44,7 @@ class Laiz_Controller
         $ret = $actionRunner->run($actionName);
 
         // run display filter
-        // TODO: separate class
+        // TODO: separate to class of this process
         $displays = $container->getComponents('Laiz_Action_Display');
         $displayResult = array();
         foreach ($displays as $a){

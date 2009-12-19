@@ -86,7 +86,7 @@ class Laiz_View_Flexy extends Laiz_View
      * @param $templateName
      * @access private
      */
-    function _setTemplate($templateName){
+    protected function parseTemplate($templateName){
         // Hidden値の設定
         // Flexyを生成する前に $this->_hidden に値を代入しておく
         // Flexyから $this->_hidden が利用される
@@ -113,7 +113,6 @@ class Laiz_View_Flexy extends Laiz_View
 
         $rep = error_reporting();
         error_reporting($rep & E_ALL); // PEARの関係上Strictエラーを除外する
-        
         $this->flexy = new Fly_Flexy($options);
 
         // Hidden値の設定
