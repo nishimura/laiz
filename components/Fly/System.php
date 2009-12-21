@@ -52,7 +52,6 @@
 */
 class Fly_System
 {
-
     /**
      * Output errors with PHP trigger_error(). You can silence the errors
      * with prefixing a "@" sign to the function call: @System::mkdir(..);
@@ -237,33 +236,27 @@ class Fly_System
      * @static
      * @access   public
      */
-    function mkDir($args)
+    static function mkDir($args)
     {
-        $opts = System::_parseArgs($args, 'pm:');
-        if (self::isError($opts)) {
-            return System::raiseError($opts);
-        }
-
         $mode = 0777; // default mode
-        foreach ($opts[0] as $opt) {
-            if ($opt[0] == 'p') {
+        $dirs = array();
+        for ($i = 0, $count = count($args); $i < $count; $i++){
+            switch ($args[$i]){
+            case '-p':
                 $create_parents = true;
-            } elseif ($opt[0] == 'm') {
-                // if the mode is clearly an octal number (starts with 0)
-                // convert it to decimal
-                if (strlen($opt[1]) && $opt[1]{0} == '0') {
-                    $opt[1] = octdec($opt[1]);
-                } else {
-                    // convert to int
-                    $opt[1] += 0;
-                }
-                $mode = $opt[1];
+                break;
+            case '-m':
+                $mode = $args[++$i];
+                break;
+            default:
+                $dirs[] = $args[$i];
+                break;
             }
         }
 
         $ret = true;
         if (isset($create_parents)) {
-            foreach ($opts[1] as $dir) {
+            foreach ($dirs as $dir) {
                 $dirstack = array();
                 while ((!file_exists($dir) || !is_dir($dir)) &&
                         $dir != DIRECTORY_SEPARATOR) {
@@ -283,7 +276,7 @@ class Fly_System
                 }
             }
         } else {
-            foreach($opts[1] as $dir) {
+            foreach($dirs as $dir) {
                 if ((@file_exists($dir) || !is_dir($dir)) && !mkdir($dir, $mode)) {
                     $ret = false;
                 }
