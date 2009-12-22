@@ -27,10 +27,24 @@ class Laiz_Autoload
         include_once $file;
     }
 
-    static public function setAll()
+    static public function init()
     {
         if (function_exists('__autoload'))
             spl_autoload_register('__autoload');
+        spl_autoload_register(array(__CLASS__, 'autoload'));
+    }
+
+    static public function walk(Array $objs)
+    {
+        spl_autoload_unregister(array(__CLASS__, 'autoload'));
+        array_map(array(__CLASS__, '_walk'), $objs);
+
+        // this method execute last
         spl_autoload_register(array('Laiz_Autoload', 'autoload'));
+    }
+
+    static private function _walk(Laiz_Autoload_Component $obj)
+    {
+        spl_autoload_register(array($obj, 'autoload'));
     }
 }

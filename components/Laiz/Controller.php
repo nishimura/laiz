@@ -26,6 +26,9 @@ class Laiz_Controller
         // create container with configure
         $container = Laiz_Container::getInstance(Laiz_Configure::get('Laiz_Container'));
 
+        // setup autoload
+        Laiz_Autoload::walk($container->getComponents('Laiz_Autoload_Component'));
+
         // create request object
         $requestArgs = Laiz_Configure::get('Laiz_Request');
         $req = $container->create('Laiz_Request');

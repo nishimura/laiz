@@ -27,7 +27,7 @@ class Laiz
 
         /** autoload */
         require_once 'Laiz/Autoload.php';
-        Laiz_Autoload::setAll();
+        Laiz_Autoload::init();
 
         /** get base setting */
         Laiz_Configure::setProjectDir($projectDir);

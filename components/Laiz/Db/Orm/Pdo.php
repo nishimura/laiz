@@ -75,9 +75,9 @@ class Laiz_Db_Orm_Pdo implements Laiz_Db_Orm{
     private function getComponentDir(){
         if ($this->COMPONENT_DIR){
             $componentDir = $this->COMPONENT_DIR;
-        }elseif (class_exists('LaizConfigure', false)){
-            $dirs = LaizConfigure::get('LaizContainer');
-            $componentDir = $dirs['COMPONENT_DIR'];
+        }elseif (class_exists('Laiz_Configure', false)){
+            $dirs = Laiz_Configure::get('Laiz_Container');
+            $componentDir = $dirs['COMPONENTS_DIR'];
         }else{
             $componentDir = self::COMPONENT_DIR;
         }

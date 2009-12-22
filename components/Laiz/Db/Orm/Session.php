@@ -1,6 +1,6 @@
 <?php
 /**
- * O/R Mapper Mock Class File
+ * O/R Mapper Mock with Session Class File
  *
  * PHP versions 5
  *
@@ -10,23 +10,22 @@
  */
 
 /**
- * O/R Mapper Mock Class
+ * O/R Mapper Mock with Session Class
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Laiz_Db_Orm_Mock implements Laiz_Db_Orm
+class Laiz_Db_Orm_Session extends Laiz_Db_Orm_Mock
 {
-    protected $primaryKeyName;
-    protected $voName = 'StdClass';
-    protected $vos = array();
+    private $s;
+    private $className;
 
-    public function __construct($name)
+    public function __construct(Laiz_Session $s, $name)
     {
-        $key = join('', array_map('ucfirst', explode('_', $name))) . 'Id';
-        $key[0] = strtolower($key[0]);
-        $this->primaryKeyName = $key;
-            
+        parent::__construct($name);
+        $this->className =
+            join('', array_map('ucfirst', explode('_', $name)));
+        $this->s = $s;
     }
 
     public function setVoName($name)
@@ -36,18 +35,31 @@ class Laiz_Db_Orm_Mock implements Laiz_Db_Orm
 
     public function createVo()
     {
-        return new $this->voName();
+        $className = 'Laiz_Db_Vo_'. $this->className;
+        $dirs = Laiz_Configure::get('LaizContainer');
+        if (!class_exists($className, false)){
+            eval("class $className implements Laiz_Db_Vo{}");
+        }
+        return new $className();
+    }
+
+    private function getVosFromSession()
+    {
+        $a = $this->s->get('__Session_Vo__');
+        return $a[$this->className];
     }
 
     public function getVo($where = null)
     {
-        if (count($this->vos) == 0)
+        $vos = $this->getVosFromSession();
+
+        if (count($vos) == 0)
             return null;
 
-        if (is_numeric($where) && isset($this->vos[$where])){
-            $vo = $this->vos[$where];
+        if (is_numeric($where) && isset($vos[$where])){
+            $vo = $vos[$where];
         }else if (is_array($where)){
-            foreach ($this->vos as $a){
+            foreach ($vos as $a){
                 $match = true;
                 foreach ($where as $k => $v){
                     if ($a->$k != $v)
@@ -59,8 +71,8 @@ class Laiz_Db_Orm_Mock implements Laiz_Db_Orm
                 }
             }
         }else{
-            reset($this->vos);
-            $tmp = each($this->vos);
+            reset($vos);
+            $tmp = each($vos);
             $vo = $tmp['value'];
         }
         if (!isset($vo)){
@@ -71,7 +83,15 @@ class Laiz_Db_Orm_Mock implements Laiz_Db_Orm
 
     public function getVos($options = array())
     {
-        return $this->vos;
+        return $this->getVosFromSession();
+    }
+
+    private function saveVoToSession($vo)
+    {
+        $a = $this->s->get('__Session_Vo__');
+        $keyName = $this->primaryKeyName;
+        $a[$this->className][$vo->$keyName] = $vo;
+        $this->s->add('__Session_Vo__', $a);
     }
 
     public function save($vo)
@@ -92,13 +112,13 @@ class Laiz_Db_Orm_Mock implements Laiz_Db_Orm
             $vo->$keyName = $key;
         }
 
-        $this->vos[$vo->$keyName] = $vo;
+        $this->saveVoToSession($vo);
     }
 
     public function currval()
     {
         $max = 0;
-        foreach ($this->vos as $vo)
+        foreach ($this->getVos() as $vo)
             if ($max < $vo->{$this->primaryKeyName})
                 $max = $vo->{$this->primaryKeyName};
         return $max;
