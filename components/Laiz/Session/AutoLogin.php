@@ -45,11 +45,18 @@ class Laiz_Session_AutoLogin
         $this->session = $sess;
     }
 
-    public function createDsn()
+    private function createDsn()
     {
         $configs = Laiz_Configure::get('Laiz_View');
         $dsn = 'sqlite:'.$configs['FLEXY_COMPILE_DIR'].'userlogin.sq3';
         return $dsn;
+    }
+
+    private function createPdo($dsn = null)
+    {
+        $dsn = $dsn ? $dsn : $this->createDsn();
+        $pdo = new PDO($dsn);
+        return $pdo;
     }
 
     private function initDatabase($pdo)
@@ -89,8 +96,7 @@ class Laiz_Session_AutoLogin
 
         $expire = $expire !== null ? $expire : 3600*24*7;
 
-        $dsn = $dsn ? $dsn : $this->createDsn();
-        $pdo = new PDO($dsn);
+        $pdo = $this->createPdo($dsn);
 
         $path = $path ? $path : '/';
 
@@ -103,6 +109,15 @@ class Laiz_Session_AutoLogin
         return true;
     }
 
+    /**
+     * Store session data to auto login database.
+     */
+    public function store($userId, $data, $expire = 604800,
+                          $dsn = null, $path = '/')
+    {
+        $pdo = $this->createPdo($dsn);
+        $this->setupAutoLogin($pdo, $userId, $path, $expire, $data);
+    }
 
     /**
      *
@@ -110,7 +125,7 @@ class Laiz_Session_AutoLogin
      * @param int $expire default is 3600*24*7
      * @param string $path cookie's path
      */
-    public function setupAutoLogin(PDO $pdo, $userId, $path = '/', $expire = 604800, $data = null){
+    private function setupAutoLogin(PDO $pdo, $userId, $path = '/', $expire = 604800, $data = null){
         if (!$this->initDatabase($pdo)){
             trigger_error('Cannot create auto login table.', E_USER_WARNING);
             return false;
@@ -141,7 +156,7 @@ class Laiz_Session_AutoLogin
         $this->session->add(self::USER_ID_KEY, $userId);
     }
 
-    public function cleanupAutoLogin(PDO $pdo, $path){
+    private function cleanupAutoLogin(PDO $pdo, $path){
         if (!isset($_COOKIE[self::COOKIE_KEY]))
             return;
         
@@ -154,22 +169,22 @@ class Laiz_Session_AutoLogin
         $pdo->exec($sql);
     }
 
-    public function isStartedSession(){
+    private function isStartedSession(){
         return ($this->session->get(self::SESSION_STARTED) === true);
     }
 
-    public function startSession(){
+    private function startSession(){
         $this->session->add(self::SESSION_STARTED, true);
     }
 
-    public function isLogined(){
+    private function isLogined(){
         return $this->session->get(self::LOGINED_KEY);
     }
-    public function setLogined(){
+    private function setLogined(){
         $this->session->add(self::LOGINED_KEY, true);
     }
 
-    public function getUserId(){
+    private function getUserId(){
         return $this->session->get(self::USER_ID_KEY);
     }
 
@@ -192,17 +207,13 @@ class Laiz_Session_AutoLogin
     public function autoLogin($expire = 604800, $path = '/', $dsn = null){
         // First argument is dsn, not PDO object.
         // PDO object doesn't need in alot of cases.
-        $userId = 0;
-
-        $dsn = $dsn ? $dsn : $this->createDsn();
-
         $data = array();
         // Return when session is started.
         if ($this->isStartedSession())
             return array(false, $this->isLogined(), $this->getUserId(), $data);
 
         if (!empty($_COOKIE[self::COOKIE_KEY])){
-            $pdo = new PDO($dsn);
+            $pdo = $this->createPdo($dsn);
 
             if (!$this->initDatabase($pdo)){
                 trigger_error('Cannot create auto login table.', E_USER_WARNING);
