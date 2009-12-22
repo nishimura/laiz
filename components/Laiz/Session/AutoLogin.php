@@ -1,6 +1,6 @@
 <?php
 /**
- * Simple Login Management Class File
+ * Simple Auto Login Management Class File
  *
  * PHP versions 5
  *
@@ -10,12 +10,13 @@
  */
 
 /**
- * simple manager of user login.
+ * Simple auto login manager of user login.
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Laiz_Session_LoginManager{
+class Laiz_Session_AutoLogin
+{
     /** @var SessionUtils */
     private $session;
 
@@ -79,11 +80,11 @@ class Laiz_Session_LoginManager{
      * @author Satoshi Nishimura <nishim314@gmail.com>
      * @return bool
      */
-    public function login(Laiz_Session_LoginChecker $checker,
+    public function login(Laiz_Session_Login $login,
                           $user, $pass, $auto,
                           $expire = null, $dsn = null, $path = null)
     {
-        if (!$id = $checker->login($user, $pass))
+        if (!$id = $login->login($user, $pass))
             return false;
 
         $expire = $expire !== null ? $expire : 3600*24*7;
@@ -109,7 +110,7 @@ class Laiz_Session_LoginManager{
      * @param int $expire default is 3600*24*7
      * @param string $path cookie's path
      */
-    public function setupAutoLogin(PDO $pdo, $userId, $path = '/', $expire = 604800){
+    public function setupAutoLogin(PDO $pdo, $userId, $path = '/', $expire = 604800, $data = null){
         if (!$this->initDatabase($pdo)){
             trigger_error('Cannot create auto login table.', E_USER_WARNING);
             return false;
@@ -117,10 +118,12 @@ class Laiz_Session_LoginManager{
 
         // register information of cookie to database.
         $loginKey = sha1(uniqid().mt_rand());
-        $sql = "insert into auto_login(user_id, key, expire) values ("
+        $sql = "insert into auto_login(user_id, key, expire, data) values ("
             . $pdo->quote($userId) . ', '
             . $pdo->quote($loginKey) . ', '
-            . $pdo->quote(date('Y-m-d H:i:s', time()+$expire)) . ')';
+            . $pdo->quote(date('Y-m-d H:i:s', time()+$expire)) . ', '
+            . $pdo->quote(serialize($data))
+            . ')';
         // TODO: insert data => $_SESSION
         $ret = $pdo->exec($sql);
 
@@ -184,7 +187,7 @@ class Laiz_Session_LoginManager{
      * @param int $expire
      * @param string $path
      * @param string $dsn
-     * @return array(bool, bool, int) startNow?, isLogined?, userId
+     * @return array(bool, bool, int, array) startNow, isLogined, userId, data
      */
     public function autoLogin($expire = 604800, $path = '/', $dsn = null){
         // First argument is dsn, not PDO object.
@@ -196,14 +199,14 @@ class Laiz_Session_LoginManager{
         $data = array();
         // Return when session is started.
         if ($this->isStartedSession())
-            return array(false, $this->isLogined(), $this->getUserId());
+            return array(false, $this->isLogined(), $this->getUserId(), $data);
 
         if (!empty($_COOKIE[self::COOKIE_KEY])){
             $pdo = new PDO($dsn);
 
             if (!$this->initDatabase($pdo)){
                 trigger_error('Cannot create auto login table.', E_USER_WARNING);
-                return array(false, false, null);
+                return array(false, false, null, $data);
             }
 
             $sql = 'select * from auto_login where key = '
@@ -215,6 +218,9 @@ class Laiz_Session_LoginManager{
                 $ret = $stmt->fetch();
                 $stmt = null;           // free statement resource
                 if ($ret['key'] === $_COOKIE[self::COOKIE_KEY]){
+                    // restore data
+                    $data = unserialize($ret['data']);
+
                     // set login flag
                     $this->setLogined();
 
@@ -230,7 +236,7 @@ class Laiz_Session_LoginManager{
         // start session
         $this->startSession();
 
-        return array(true, $this->isLogined(), $this->getUserId());
+        return array(true, $this->isLogined(), $this->getUserId(), $data);
     }
 
 }

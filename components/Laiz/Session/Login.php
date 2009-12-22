@@ -15,9 +15,10 @@
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-interface Laiz_Session_LoginChecker{
+interface Laiz_Session_Login
+{
     /**
-     * ログインチェック用関数
+     * check user and password.
      *
      * @param string $user
      * @param string $pass
