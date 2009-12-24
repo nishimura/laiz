@@ -108,7 +108,7 @@ class Laiz_Db_Orm_Session extends Laiz_Db_Orm_Mock
     {
         $keyName = $this->primaryKeyName;
         if (!isset($vo->$keyName)){
-            $key = count($this->vos)+1;
+            $key = count($this->getVos())+1;
             $vo->$keyName = $key;
         }
 
