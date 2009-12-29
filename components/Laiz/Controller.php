@@ -46,6 +46,10 @@ class Laiz_Controller
         $actionRunner = $container->create('Laiz_Action_Runner', 200);
         $ret = $actionRunner->run($actionName);
 
+        // setting view
+        $view->setTemplateDir($ret['templateDir']);
+        $view->setTemplate($ret['view']);
+
         // run display filter
         // TODO: separate to class of this process
         $displays = $container->getComponents('Laiz_Action_Display');
@@ -66,7 +70,6 @@ class Laiz_Controller
         }
 
         // run view
-        $view->setTemplateDir($ret['templateDir']);
-        $view->execute($ret['view']);
+        $view->execute();
     }
 }

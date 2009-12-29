@@ -24,7 +24,7 @@ abstract class Laiz_View
      * @var string $_template
      * @access protected
      */
-    var $_template;
+    private $template;
 
     /**
      * @var string[] $_encoding
@@ -55,20 +55,23 @@ abstract class Laiz_View
      * @access public
      */
     public function setTemplate($template){
-        $this->_template = $template;
+        $this->template = $template;
+    }
+
+    public function getTemplate()
+    {
+        return $this->template;
     }
 
     /**
      * ビューの実行
      *
-     * @param array $viewFilterConfigs
-     * @param array $iniConfigs
      * @access public
      * @return string テンプレートを指定する文字列
      */
-    public function execute($actionName){
+    public function execute(){
         // テンプレート名の取得
-        $templateName = $this->getTemplateName($actionName);
+        $templateName = $this->getTemplateName($this->template);
 
         // テンプレートの設定
         $this->parseTemplate($templateName);
@@ -253,13 +256,13 @@ abstract class Laiz_View
     /**
      * 出力を返却
      *
-     * @param string $actionName
+     * @param string $template
      * @return string
      * @access public
      */
-    public function bufferedOutput($actionName){
+    public function bufferedOutput($template){
         // テンプレート名の取得
-        $templateName = $this->getTemplateName($actionName);
+        $templateName = $this->getTemplateName($template);
 
         // テンプレートの設定
         $this->parseTemplate($templateName);
