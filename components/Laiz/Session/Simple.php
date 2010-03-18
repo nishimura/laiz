@@ -17,23 +17,19 @@
  */
 class Laiz_Session_Simple implements Laiz_Session
 {
-    /** @var bool 二度以上呼ばれたときのためにセッションが開始されているかのチェックフラグ */
+    /** @var bool */
     private $isStarted = false;
+    /** @ver int */
+    private $lifetime = 0;
+    /** @var string */
+    private $path = '/';
+    /** @ver string */
+    private $domain;
 
-    /**
-     * セッションの開始
-     * @param string $sid セッションID
-     * @param string $path セッションクッキーパス
-     * @access public
-     */
-    public function __construct($sessionName = null, $sid = null, $path = '/'){
-        if ($sid)
-            session_id($sid);
-        
-        if ($sessionName)
-            session_name($sessionName);
-        $path = $path ? $path : $this->_path;
-        
+    public function setSessionName($name)
+    {
+        session_name($name);
+        return $this;
     }
 
     public function setSid($sid)
@@ -41,8 +37,24 @@ class Laiz_Session_Simple implements Laiz_Session
         session_id($sid);
     }
 
+    public function setLifetime($time)
+    {
+        $this->lifetime = $time;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
+    }
+
     public function start()
     {
+        session_set_cookie_params($this->lifetime, $this->path, $this->domain);
         session_start();
         $this->isStarted = true;
         $this->init();
