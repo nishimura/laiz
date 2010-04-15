@@ -626,8 +626,8 @@ class Fly_Flexy
     {
         return $this->bufferedOutputObject($object);
     }
-    public function __toString($object = false)
+    public function __toString()
     {
-        return $this->toString($object);
+        return $this->toString();
     }
 }
