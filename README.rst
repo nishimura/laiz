@@ -26,7 +26,7 @@ Including ``Laiz.php`` and invoke ``laze`` method to run framework::
 
 Adding template file of top page::
 
-   mkdir -p components/Base/templates
+   mkdir -p app/Base/templates
    echo 'Hello World!' > components/Base/templates/Top.html
 
 Adding template files with action::

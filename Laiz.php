@@ -2,12 +2,16 @@
 /**
  * Laiz - Web application framework
  *
- * PHP versions 5
+ * PHP versions 5.3
  *
  * @package    Laiz
  * @author     Satoshi Nishimura <nishim314@gmail.com>
- * @copyright  2005-2009 Satoshi Nishimura
+ * @copyright  2005-2010 Satoshi Nishimura
  */
+
+use \laiz\autoloader\BasicLoader;
+use \laiz\core\Configure;
+use \laiz\core\Controller;
 
 /**
  * Laiz Framework Class
@@ -21,20 +25,20 @@ class Laiz
         /** setting base include path */
         $laizDir = dirname(__FILE__) . '/';
         ini_set('include_path',
-                $projectDir . 'components' . PATH_SEPARATOR . 
-                $laizDir . 'components' . PATH_SEPARATOR .
+                $projectDir . 'app' . PATH_SEPARATOR .
+                $laizDir . PATH_SEPARATOR .
                 ini_get('include_path'));
 
         /** autoload */
-        require_once 'Laiz/Autoload.php';
-        Laiz_Autoload::init();
+        require_once 'laiz/autoloader/BasicLoader.php';
+        BasicLoader::init();
 
         /** get base setting */
-        Laiz_Configure::setProjectDir($projectDir);
-        $configs = Laiz_Configure::get();
+        Configure::setProjectDir($projectDir);
+        $configs = Configure::get();
 
         /** php.ini */
-        $phpIniConfigs = Laiz_Configure::get('ini');
+        $phpIniConfigs = Configure::get('ini');
         foreach ($phpIniConfigs as $key => $value)
             ini_set($key, $value);
 
@@ -44,11 +48,11 @@ class Laiz
 
         /** error class used by laiz */
         if ($configs['USING_LAIZ_ERROR_UTILS']){
-            require_once 'Laiz/Error/Creator.php';
+            require_once 'laiz/error/Creator.php';
         }
 
         /* start controller of laiz framework */
-        $controller = new Laiz_Controller();
+        $controller = new Controller();
         $controller->execute();
     }
 }

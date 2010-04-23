@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Laiz Test Page</title>
+    <flexy:include src="include/htmlhead.html" />
+  </head>
+  <body>
+    <header>
+      <h1>Laiz Test Page</h1>
+    </header>
+
+    <menu>
+      <ul>
+        <li>Action
+          <ul>
+            <li><a href="/Run">Run</a></li>
+            <li><a href="/Request?req=foo">Request</a></li>
+            <li><a href="/Pathinfo/baz/bazbaz">Path Info</a></li>
+            <li><a href="/Result">Result</a></li>
+            <li>Configurable
+              <ul>
+                <li><a href="/Directory_DirectoryPage">Directory</a></li>
+                <li><a href="/nspace_NspacePage">Namespace</a></li>
+                <li><a href="/Pathinfo/PathinfoPage">PathInfo</a> :TODO /Foo/Bar/ActionConfiguable/ActionName
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+
+        <li>Config
+          <ul>
+            <li><a href="/Property">Property</a></li>
+            <li><a href="/Filter">Filter</a></li>
+          </ul>
+        </li>
+
+        <li>Library
+          <ul>
+            <li><a href="/Mail">Mail</a></li>
+            <li><a href="/Autoloader">Autoloader</a></li>
+            <li><a href="/DisplayNone">Display None</a></li>
+            <li><a href="/AutoLogin">Auto Login</a></li>
+
+            <li>Database
+              <ul>
+                <li><a href="/Db_Create">Create</a></li>
+                <li><a href="/Db_Get">Get</a></li>
+                <li><a href="/Db_Iterator">Iterator</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </menu>
+
+    <footer>
+      <p>copyright (c) 2010 Satoshi Nishimura</p>
+      <address>nishim314@gmail.com</address>
+    </footer>
+  </body>
+</html>

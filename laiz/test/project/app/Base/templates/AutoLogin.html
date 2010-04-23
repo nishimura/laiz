@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Laiz Test Page</title>
+    <flexy:include src="include/htmlhead.html" />
+  </head>
+  <body>
+    <header>
+      <h1>Laiz Test Page</h1>
+    </header>
+
+    <article>
+      <p>{message}</p>
+      {if:logined}
+      <p>Logined!</p>
+      <p><a href="/Logout">Logout</a></p>
+      {else:}
+      <form action="/Login" method="POST">
+        name: <input type="text" name="name" value=""> foo
+        <br>
+        pass: <input type="password" name="password" value=""> bar
+        <br>
+        auto: <input type="checkbox" name="auto" value="ON">
+        <br>
+        <input type="submit" value="  Login  ">
+      </form>
+      {end:}
+
+      <p><a href="/">back...</a></p>
+    </article>
+
+    <footer>
+      <p>copyright (c) 2010 Satoshi Nishimura</p>
+      <address>nishim314@gmail.com</address>
+    </footer>
+  </body>
+</html>

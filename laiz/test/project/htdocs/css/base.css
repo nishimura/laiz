@@ -1,0 +1,34 @@
+html, body
+{
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+header
+{
+  margin: 10px 20px;
+}
+
+article
+{
+  margin: 20px;
+}
+
+menu
+{
+  margin: 20px 40px;
+}
+
+ul
+{
+  margin-left: 10px;
+  margin-bottom: 8px;
+}
+
+footer
+{
+  margin: 4px;
+  position: absolute;
+  bottom: 10px;
+}
