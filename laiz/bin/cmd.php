@@ -11,4 +11,4 @@
 
 
 require_once dirname(dirname(dirname(__FILE__))) . '/Laiz.php';
-Laiz::laze();
+Laiz::laze(dirname(dirname(__FILE__)));

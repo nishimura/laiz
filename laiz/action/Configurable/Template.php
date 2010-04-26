@@ -55,7 +55,10 @@ abstract class Configurable_Template implements Configurable
     }
     public function getTemplateDir()
     {
-        return rtrim($this->getPrefix(), '\\_') . '/templates';
+        $prefix = $this->getPrefix();
+        $prefix = str_replace('_', '/', $prefix);
+        $prefix = str_replace('\\', '/', $prefix);
+        return rtrim($prefix, '/') . '/templates';
     }
     public function convertActionClassName($actionName)
     {

@@ -145,7 +145,8 @@ class Runner
 
     private function getConfigs($actionName)
     {
-        $configFile = '/' . str_replace('_', '/', $actionName);
+        $configFile = str_replace('\\', '/', $actionName);
+        $configFile = '/' . str_replace('_', '/', $configFile);
         $tokens = explode('/', $configFile);
         $path = '';
         $configs = array();

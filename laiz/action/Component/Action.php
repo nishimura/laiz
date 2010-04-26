@@ -36,6 +36,7 @@ class Component_Action implements Component
 
         $fileExists = false;
         $classPath = str_replace('_', '/', $actionName);
+        $classPath = str_replace('\\', '/', $classPath);
         foreach (explode(PATH_SEPARATOR, ini_get('include_path')) as $path){
             if (file_exists($path . "/$classPath.php")){
                 $fileExists = true;
