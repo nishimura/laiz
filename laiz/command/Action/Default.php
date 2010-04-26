@@ -11,6 +11,7 @@
 
 namespace laiz\command;
 
+use \laiz\action\Request;
 use \laiz\lib\aggregate\laiz\command\Describables;
 
 /**
@@ -21,9 +22,19 @@ use \laiz\lib\aggregate\laiz\command\Describables;
  */
 class Action_Default
 {
+    public $arg1;
+    public $arg2;
     public $_version;
-    public function act(Describables $describables)
+    public function act(Describables $describables, Request $req)
     {
+        if ($this->arg1 === '-h' || $this->arg1 === '--help'){
+            if ($this->arg2){
+                $action = $this->arg2;
+                return "action:$action";
+            }else{
+                return 'action:Help';
+            }
+        }
         echo 'Laiz ', $this->_version;
         echo "\n";
 
@@ -31,7 +42,7 @@ class Action_Default
         foreach ($describables as $describe){
             $className = get_class($describe);
             $className = str_replace('laiz\\command\\Action_', '', $className);
-            $className = sprintf("%-16s", $className);
+            $className = sprintf("%-12s", $className);
             echo '  laiz.sh ' . $className . ": " . $describe->describe();
             echo "\n";
         }

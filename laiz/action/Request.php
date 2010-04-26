@@ -38,17 +38,22 @@ class Request implements Singleton
      */
     function __construct(){
         if (isset($_SERVER['argv'], $_SERVER['argc'])){
+            // ==todo== separate class or function
             // command line
+            $argIndex = 1;
+            $setAction = false;
             for ($i = 1; $i < $_SERVER['argc']; $i++){
-                switch ($i){
-                case 1:
-                    $this->add('action', $_SERVER['argv'][$i]);
-                    break;
-
-                default:
-                    $this->add('arg' . $i, $_SERVER['argv'][$i]);
-                    break;
+                if (!$setAction){
+                    // action is first argument excluding /^-/
+                    if (!preg_match('/^-/', $_SERVER['argv'][$i])){
+                        $this->add('action', $_SERVER['argv'][$i]);
+                        $setAction = true;
+                        continue;
+                    }
                 }
+
+                $this->add('arg' . $argIndex, $_SERVER['argv'][$i]);
+                $argIndex++;
             }
         }
 
