@@ -25,9 +25,6 @@ class BasicLoader
         if (preg_match('/^Fly_Flexy_/', $name))
             return;
 
-        if ($name === 'FooClass')
-            return;
-
         $name = str_replace('\\', '/', $name);
         $file = str_replace('_', '/', $name) . '.php';
         include_once $file;

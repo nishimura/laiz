@@ -37,13 +37,30 @@ class Request implements Singleton
      * @access public
      */
     function __construct(){
+        if (isset($_SERVER['argv'], $_SERVER['argc'])){
+            // command line
+            for ($i = 1; $i < $_SERVER['argc']; $i++){
+                switch ($i){
+                case 1:
+                    $this->add('action', $_SERVER['argv'][$i]);
+                    break;
+
+                default:
+                    $this->add('arg' . $i, $_SERVER['argv'][$i]);
+                    break;
+                }
+            }
+        }
+
         if (is_array($_REQUEST)){
+            // web application
             foreach ($_REQUEST as $key => $value){
                 $this->add($key, $value);
             }
         }
 
-        $this->add("REQUEST_METHOD", $_SERVER["REQUEST_METHOD"]);
+        if (isset($_SERVER['REQUEST_METHOD']))
+            $this->add("REQUEST_METHOD", $_SERVER["REQUEST_METHOD"]);
     }
 
     /**

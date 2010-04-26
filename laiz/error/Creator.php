@@ -41,14 +41,21 @@ class Creator
     }
 
     /**
-     * cloneの禁止
-     *
-     * @access public
+     * not allow clone
      */
-    public function __clone(){
+    private function __clone(){
         trigger_error('Clone is not allowed', E_ERROR);
     }
-    
+
+    /**
+     * override default error handler
+     */
+    public static function register()
+    {
+        set_error_handler(array('laiz\error\Creator', 'laizError'));
+        error_reporting(E_ALL | E_STRICT);
+    }
+
     /**
      * 定義済変数からサブクラスを設定する
      *
@@ -174,8 +181,3 @@ class Creator
         return true;
     }
 }
-
-// 標準のエラーハンドラを書き換える
-set_error_handler(array('laiz\error\Creator', 'laizError'));
-
-error_reporting(E_ALL | E_STRICT);

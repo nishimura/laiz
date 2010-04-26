@@ -16,6 +16,7 @@ use \laiz\parser\Ini_Simple;
 
 use \RecursiveIteratorIterator;
 use \RecursiveDirectoryIterator;
+use \UnexpectedValueException;
 
 use \ReflectionClass;
 use \ReflectionException;
@@ -93,7 +94,7 @@ class Container
          */
         $base = Configure::get('base');
 
-        if ($base['INTERFACES_CACHING']){
+        if ($base['INTERFACES_CACHE']){
             $cacheFile = $base['CACHE_DIR'] . self::CACHE_FILENAME;
             if (file_exists($cacheFile)){
                 // using cache.
@@ -112,12 +113,12 @@ class Container
         // if not parsed
         $interfaces = array();
         $interfaces = $this->getAggregatable($projectDir, $interfaces);
-        if (!class_exists('\laiz\action\Runner', false))
+        if (!class_exists('laiz\action\Runner', false))
             $interfaces = $this->getAggregatable($laizDir, $interfaces);
 
         $this->registerInterfaces($interfaces);
 
-        if ($base['INTERFACES_CACHING'])
+        if ($base['INTERFACES_CACHE'])
             file_put_contents($cacheFile, serialize($this->interfaces));
 
         // ==debug==
@@ -127,11 +128,13 @@ class Container
 
     private function getAggregatable($basePath, $aggregatableInterfaces)
     {
-        $iterator = new AutoIncludeFilter(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($basePath)));
-        foreach ($iterator as $i){
-            $file = (string)$i;
-            include_once $file;
+        $iterator = new RecursiveIteratorIterator(new AutoIncludeFilter(new RecursiveDirectoryIterator($basePath)), RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($iterator as $fileInfo){
+            $file = $fileInfo->getFilename();
+            if (!preg_match('/^[A-Z][^.]+\.php$/', $file))
+                continue;
 
+            include_once $fileInfo->getPathname();
         }
 
         $interfaces = get_declared_interfaces();

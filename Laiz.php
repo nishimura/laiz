@@ -12,6 +12,7 @@
 use \laiz\autoloader\BasicLoader;
 use \laiz\core\Configure;
 use \laiz\core\Controller;
+use \laiz\error\Creator;
 
 /**
  * Laiz Framework Class
@@ -47,8 +48,10 @@ class Laiz
         
 
         /** error class used by laiz */
-        if ($configs['USING_LAIZ_ERROR_UTILS']){
+        /** not include by command line */
+        if (!isset($_SERVER['argv']) && $configs['USING_LAIZ_ERROR_UTILS']){
             require_once 'laiz/error/Creator.php';
+            Creator::register();
         }
 
         /* start controller of laiz framework */
