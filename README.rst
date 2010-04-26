@@ -2,7 +2,8 @@
 Laiz: PHP Framework
 ====================
 
-Laiz is MVC framework that is developed with PHP5, and uses HTML_Template_Flexy.
+Laiz is MVC framework that is developed with PHP5.3,
+and uses HTML_Template_Flexy.
 
 Laiz is a framework to offer a flexible development environment.
 Current is a development version.
