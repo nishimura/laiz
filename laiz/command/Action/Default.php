@@ -11,6 +11,8 @@
 
 namespace laiz\command;
 
+use \laiz\lib\aggregate\laiz\command\Describables;
+
 /**
  * Default Action of Command Line.
  *
@@ -20,20 +22,19 @@ namespace laiz\command;
 class Action_Default
 {
     public $_version;
-    public function act()
+    public function act(Describables $describables)
     {
         echo 'Laiz ', $this->_version;
         echo "\n";
-        echo $this->commands();
-        echo "\n";
-    }
 
-    private function commands()
-    {
-        $str = "COMMANDS: \n"
-            . "  laiz.sh Help: View help.\n"
-            . "  laiz.sh <ActionName>: Run action\n"
-            ;
-        return $str;
+        echo "COMMANDS\n";
+        foreach ($describables as $describe){
+            $className = get_class($describe);
+            $className = str_replace('laiz\\command\\Action_', '', $className);
+            $className = sprintf("%-16s", $className);
+            echo '  laiz.sh ' . $className . ": " . $describe->describe();
+            echo "\n";
+        }
+        echo "\n";
     }
 }
