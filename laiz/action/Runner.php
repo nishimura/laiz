@@ -177,7 +177,7 @@ class Runner
                 foreach ($value as $includeFile){
                     // override:
                     //   global < upper section < include < under section
-                    $configs = $this->mergeIniFile($iniFile, $configs);
+                    $configs = $this->mergeIniFile($includeFile, $configs);
                 }
                 continue;
             }
