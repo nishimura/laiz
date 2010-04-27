@@ -21,14 +21,15 @@ use \laiz\lib\aggregate\laiz\command\Describables;
  */
 class Action_Default
 {
+    public $h;
+    public $help;
     public $arg1;
-    public $arg2;
     public $_version;
     public function act(Describables $describables)
     {
-        if ($this->arg1 === '-h' || $this->arg1 === '--help'){
-            if ($this->arg2){
-                $action = $this->arg2;
+        if ($this->h || $this->help){
+            if ($this->arg1){
+                $action = $this->arg1;
                 return "action:$action";
             }else{
                 return 'action:Help';

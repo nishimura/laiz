@@ -26,20 +26,40 @@ class Request_Commandline implements Request
         if (!isset($_SERVER['argv'], $_SERVER['argc']))
             return;
 
-        $argIndex = 1;
+        $argIndex = 0;
         $setAction = false;
         for ($i = 1; $i < $_SERVER['argc']; $i++){
-            if (!$setAction){
-                // action is first argument excluding /^-/
-                if (!preg_match('/^-/', $_SERVER['argv'][$i])){
-                    $this->add('action', $_SERVER['argv'][$i]);
-                    $setAction = true;
-                    continue;
+            $arg = $_SERVER['argv'][$i];
+            switch (true){
+            case (preg_match('/^-[a-zA-Z0-9]/', $arg)):
+                $arg = ltrim($arg, '-');
+                $chars = str_split($arg);
+                foreach ($chars as $char){
+                    $this->add($char, $char);
                 }
+                break;
+
+            case (preg_match('/^--[a-zA-Z0-9]+=(.+)$/', $arg)):
+                list ($key, $value) = explode('=', $arg, 2);
+                $this->add(ltrim($key, '-'), $value);
+                break;
+
+            case (preg_match('/^--[a-zA-Z0-9]+$/', $arg)):
+                $this->add(ltrim($arg, '-'), $arg);
+                break;
+
+            default:
+                if ($argIndex === 0)
+                    $this->add('action', $arg);
+                else
+                    $this->add('arg' . $argIndex, $arg);
+                $argIndex++;
+                break;
             }
-            $this->add('arg' . $argIndex, $_SERVER['argv'][$i]);
-            $argIndex++;
         }
+
+        $this->add('argv', $_SERVER['argv']);
+        $this->add('argc', $_SERVER['argc']);
     }
 
     public function initActionName()
@@ -49,6 +69,7 @@ class Request_Commandline implements Request
 
     public function getActionName()
     {
+        return $this->get('action');
     }
 
     public function add($name, $value)
@@ -66,6 +87,17 @@ class Request_Commandline implements Request
 
     public function setRequestsByConfigs(Array $configs)
     {
+        if (!isset($configs['args']) || !is_array($configs['args']))
+            return;
 
+        foreach ($configs['args'] as $key => $value){
+            if (!is_numeric($value)){
+                trigger_error("$value is not numeric with $key key in config ini file.");
+                continue;
+            }
+
+            $argN = $this->get('arg' . $value);
+            $this->add($key, $argN);
+        }
     }
 }

@@ -26,15 +26,28 @@ class Component_Runner
 {
     static public function run($className, Array $config, $methodName)
     {
+        $obj = Builder::build($className);
+
         $container = Container::getInstance();
         $response  = $container->create('laiz.action.Response');
-        $request   = $container->create('laiz.action.Request');
-
-        $obj = Builder::build($className);
         $response->addObject($obj);
+
+        self::prepare($obj, $config);
+        return self::exec($obj, $methodName);
+    }
+
+    static public function prepare($obj, Array $config)
+    {
+        $container = Container::getInstance();
+        $request = $container->create('laiz.action.Request');
         $request->setRequestsByConfigs($config);
         Util::setPropertiesByRequest($request, $obj);
         Builder::initObject($obj, $config);
+        return $obj;
+    }
+
+    static public function exec($obj, $methodName)
+    {
         return Builder::execMethod($obj, $methodName);
     }
 }

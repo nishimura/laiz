@@ -12,6 +12,7 @@
 namespace laiz\command;
 
 use \laiz\action\Configurable_Template;
+use \laiz\builder\Singleton;
 
 /**
  * Class of command line action.
@@ -20,10 +21,15 @@ use \laiz\action\Configurable_Template;
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  * @priority  980
  */
-class Action extends Configurable_Template
+class Action extends Configurable_Template implements Singleton
 {
+    private $forceUnuse = false;
+
     public function match($actionName)
     {
+        if ($this->forceUnuse)
+            return false;
+
         if (isset($_SERVER['argv'], $_SERVER['argc']))
             return true;
         else
@@ -35,5 +41,15 @@ class Action extends Configurable_Template
         if (strlen(trim($actionName)) === 0)
             $actionName = 'Default';
         return $actionName;
+    }
+
+    public function setUse()
+    {
+        $this->forceUnuse = false;
+    }
+
+    public function setUnuse()
+    {
+        $this->forceUnuse = true;
     }
 }

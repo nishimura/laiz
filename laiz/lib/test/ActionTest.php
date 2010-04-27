@@ -21,5 +21,26 @@ use \laiz\builder\Aggregatable;
  */
 interface ActionTest extends Aggregatable
 {
-    public function test();
+    //
+    // Not required method.
+    //
+    // /**
+    //  * Prepared property test.
+    //  */
+    // public function testPrep(Assert $assert);
+    //
+    // /**
+    //  * Test Action.
+    //  *
+    //  * @ActionTest request:argName=argValue
+    //  * @ActionTest return:returnValue
+    //  */
+    // public function test*(Assert $assert);
+    //
+
+    /**
+     * Returns action name when implemented class running.
+     * @return string
+     */
+    public function getActionName();
 }

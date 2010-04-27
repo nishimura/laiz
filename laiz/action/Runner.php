@@ -42,6 +42,13 @@ class Runner
 
     public function run($actionName)
     {
+        $opts = $this->parseOpts($actionName);
+        $configs = $this->getConfigs($opts['actionName']);
+        return $this->runRoutine($opts['actionName'], $configs, $opts);
+    }
+
+    public function parseOpts($actionName)
+    {
         $match = false;
         foreach ($this->configurables as $obj){
             if ($obj->match($actionName)){
@@ -56,12 +63,11 @@ class Runner
             // sure match Configurable_Default last.
         }
 
-        $configs = $this->getConfigs($componentAction);
         $opts = array('actionName' => $componentAction,
                       'methodName' => $methodName,
                       'templateDir' => $templateDir,
                       'templateName' => $templateName);
-        return $this->runRoutine($componentAction, $configs, $opts);
+        return $opts;
     }
 
     private function clean()
@@ -143,7 +149,7 @@ class Runner
 
     }
 
-    private function getConfigs($actionName)
+    public function getConfigs($actionName)
     {
         $configFile = str_replace('\\', '/', $actionName);
         $configFile = '/' . str_replace('_', '/', $configFile);

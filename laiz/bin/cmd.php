@@ -9,6 +9,15 @@
  * @copyright 2010 Satoshi Nishimura
  */
 
+if (isset($_SERVER['BASE']))
+    $base = $_SERVER['BASE'];
+else if (isset($_SERVER['PROJECT_BASE_DIR']))
+    $base = $_SERVER['PROJECT_BASE_DIR'];
+else
+    $base = getcwd();
+
+if (!preg_match('@/$@', $base))
+    $base .= '/';
 
 require_once dirname(dirname(dirname(__FILE__))) . '/Laiz.php';
-Laiz::laze(dirname(dirname(__FILE__)));
+Laiz::laze($base);
