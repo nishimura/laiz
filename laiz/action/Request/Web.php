@@ -177,7 +177,7 @@ class Request_Web implements Request
         return $this->actionName;
     }
 
-    public function setRequestsByPathInfo($configs){
+    public function setRequestsByConfigs(Array $configs){
         // PATH_INFOからプロパティ設定
         if ($this->PATH_INFO_ACTION && isset($_SERVER['PATH_INFO']) && isset($configs['pathinfo'])){
             $pathInfo = explode('/', $_SERVER['PATH_INFO']);
@@ -189,24 +189,5 @@ class Request_Web implements Request
 
     }
 
-    /**
-     * Set class property by request.
-     *
-     * @param Object $class
-     * @access public
-     */
-    function setPropertiesByRequest($class){
-        $properties = get_object_vars($class);
-        foreach ($properties as $property => $var){
-            // not include variable that starts underscore
-            if (preg_match('/^([^_].*)/', $property, $matches)){
-                $value = $this->get($matches[1]);
 
-                if ($value !== null){
-                    $class->$property = $value;
-                }
-            }
-        }
-
-    }
 }

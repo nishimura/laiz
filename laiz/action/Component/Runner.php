@@ -32,8 +32,8 @@ class Component_Runner
 
         $obj = Builder::build($className);
         $response->addObject($obj);
-        $request->setRequestsByPathInfo($config);
-        $request->setPropertiesByRequest($obj);
+        $request->setRequestsByConfigs($config);
+        Util::setPropertiesByRequest($request, $obj);
         Builder::initObject($obj, $config);
         return Builder::execMethod($obj, $methodName);
     }

@@ -23,4 +23,5 @@ interface Request extends Singleton
 {
     public function add($name, $value);
     public function get($name);
+    public function setRequestsByConfigs(Array $configs);
 }

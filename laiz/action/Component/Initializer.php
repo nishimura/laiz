@@ -37,7 +37,7 @@ class Component_Initializer implements Component
 
     public function run(Array $configs)
     {
-        $this->request->setRequestsByPathInfo($configs);
+        $this->request->setRequestsByConfigs($configs);
 
         $a = new StdClass();
         if (isset($configs['property']))
@@ -45,7 +45,7 @@ class Component_Initializer implements Component
                 $a->$key = $val;
 
         // override property used request
-        $this->request->setPropertiesByRequest($a);
+        Util::setPropertiesByRequest($this->request, $a);
 
         if (isset($configs['pathinfo']))
             foreach ($configs['pathinfo'] as $key => $val)
