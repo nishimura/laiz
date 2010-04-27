@@ -47,6 +47,7 @@ class Component_Initializer implements Component
         // override property used request
         Util::setPropertiesByRequest($this->request, $a);
 
+        // Setting Arguments from Request for a template.
         if (isset($configs['pathinfo']))
             foreach ($configs['pathinfo'] as $key => $val)
                 $a->$key = $this->request->get($key);
