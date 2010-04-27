@@ -11,8 +11,6 @@
 
 namespace laiz\action;
 
-use \laiz\builder\Singleton;
-
 /**
  * HTTP Request Management Class.
  *
@@ -37,26 +35,6 @@ class Request_Web implements Request
      * @access public
      */
     function __construct(){
-        if (isset($_SERVER['argv'], $_SERVER['argc'])){
-            // ==todo== separate class or function
-            // command line
-            $argIndex = 1;
-            $setAction = false;
-            for ($i = 1; $i < $_SERVER['argc']; $i++){
-                if (!$setAction){
-                    // action is first argument excluding /^-/
-                    if (!preg_match('/^-/', $_SERVER['argv'][$i])){
-                        $this->add('action', $_SERVER['argv'][$i]);
-                        $setAction = true;
-                        continue;
-                    }
-                }
-
-                $this->add('arg' . $argIndex, $_SERVER['argv'][$i]);
-                $argIndex++;
-            }
-        }
-
         if (is_array($_REQUEST)){
             // web application
             foreach ($_REQUEST as $key => $value){
@@ -102,16 +80,6 @@ class Request_Web implements Request
         }else{
             return null;
         }
-    }
-
-    /**
-     * Return all variable.
-     *
-     * @return mixed
-     * @access public
-     */
-    function getAll(){
-        return $this->params;
     }
 
     /**
