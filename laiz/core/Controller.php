@@ -14,7 +14,6 @@ namespace laiz\core;
 use laiz\autoloader\BasicLoader;
 use laiz\builder\Container;
 use laiz\builder\Object as Builder;
-use laiz\action\Request;
 use laiz\action\Runner;
 
 /**
@@ -37,11 +36,8 @@ class Controller
         // setup autoload
         BasicLoader::walk($container->getComponents('laiz.autoloader.Register'));
 
-        // create request and Response object
-        $requestArgs = Configure::get('laiz.action.Request');
-        $req = $container->create('laiz.action.Request');
-        $req->setActionKey($requestArgs['ACTION_KEY']);
-        $req->setPathInfoAction($requestArgs['PATH_INFO_ACTION']);
+        // create request object
+        $req = $container->get('laiz.action.Request');
 
         // run action
         $actionName = $req->initActionName()->getActionName();

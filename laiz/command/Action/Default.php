@@ -11,7 +11,6 @@
 
 namespace laiz\command;
 
-use \laiz\action\Request;
 use \laiz\lib\aggregate\laiz\command\Describables;
 
 /**
@@ -25,7 +24,7 @@ class Action_Default
     public $arg1;
     public $arg2;
     public $_version;
-    public function act(Describables $describables, Request $req)
+    public function act(Describables $describables)
     {
         if ($this->arg1 === '-h' || $this->arg1 === '--help'){
             if ($this->arg2){

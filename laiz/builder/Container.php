@@ -89,6 +89,24 @@ class Container
 
     public function init()
     {
+        $this->initInterfaces();
+        $this->initComponents();
+    }
+
+    private function initComponents()
+    {
+        $modes = $this->getComponents('laiz.builder.Mode');
+        foreach ($modes as $mode){
+            if (!$mode->accept())
+                continue;
+
+            $mode->buildComponents($this);
+            break;
+        }
+    }
+
+    private function initInterfaces()
+    {
         /*
          * Initialize Aggregatable Interfaces.
          */
@@ -213,11 +231,11 @@ class Container
      * コンポーネントの作成
      *
      * @param string $componentName
-     * @param int $priority
-     * @return Laiz_Container
-     * @access public
+     * @param string $registerName
+     * @return Object
      */
-    function create($componentName){
+    public function create($componentName, $registerName = '')
+    {
         $componentName = str_replace('.', '\\', $componentName);
         // コンポーネントが既に存在する場合はここでリターン
         if (is_object($this->get($componentName))){
@@ -225,6 +243,9 @@ class Container
         }
 
         $obj = Object::build($componentName);
+
+        if (strlen($registerName) > 0)
+            $componentName = str_replace('.', '\\', $registerName);
 
         if ($obj instanceof Singleton)
             $this->register($obj, $componentName);

@@ -21,12 +21,10 @@ namespace laiz\action;
 class Component_Action implements Component
 {
     private $response;
-    private $request;
 
-    public function __construct(Response $res, Request $req)
+    public function __construct(Response $res)
     {
         $this->response = $res;
-        $this->request  = $req;
     }
 
     public function run(Array $config)

@@ -1,6 +1,6 @@
 <?php
 /**
- * Request Interface.
+ * Interface for Action Test.
  *
  * PHP versions 5.3
  *
@@ -9,18 +9,17 @@
  * @copyright 2010 Satoshi Nishimura
  */
 
-namespace laiz\action;
+namespace laiz\lib\test;
 
-use \laiz\builder\Singleton;
+use \laiz\builder\Aggregatable;
 
 /**
- * Request Interface.
+ * Interface for Action Test.
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-interface Request extends Singleton
+interface ActionTest extends Aggregatable
 {
-    public function add($name, $value);
-    public function get($name);
+    public function test();
 }

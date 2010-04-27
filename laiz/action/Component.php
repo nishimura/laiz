@@ -21,7 +21,6 @@ use \laiz\builder\Singleton;
  *   Initializer: 1
  *   Converter:  10
  *   Validator:  20
- *   Request  :  50
  *   Filter   :  80
  *   Action   : 200
  *   Display  : 250

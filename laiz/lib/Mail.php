@@ -12,7 +12,6 @@
 namespace laiz\lib;
 
 use \laiz\view\Flexy;
-use \laiz\action\Request;
 use \laiz\validator\Simple as Validator;
 
 /**
@@ -33,9 +32,6 @@ class Mail
     /** @var Laiz_View */
     private $view;
 
-    /** @var Laiz_Request */
-    private $request;
-
     /** @var mixed */
     private $toCopy;
 
@@ -45,9 +41,8 @@ class Mail
     /**
      * デフォルトのヘッダを設定する
      */
-    public function __construct(Flexy $view, Request $req){
+    public function __construct(Flexy $view){
         $this->view = clone $view;
-        $this->request = $req;
     }
 
     /**

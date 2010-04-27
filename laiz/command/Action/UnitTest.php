@@ -34,8 +34,8 @@ class Action_UnitTest implements Describable
 
     public function help()
     {
-        echo "laiz.sh UnitTest          : All Test.\n";
-        echo "laiz.sh UnitTest <action> : Action Test.\n";
+        echo "laiz.sh UnitTest          : All Tests.\n";
+        echo "laiz.sh UnitTest <Class>  : Unit Test.\n";
         echo "\n";
     }
 

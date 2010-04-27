@@ -22,16 +22,8 @@ use laiz\parser\Ini_Simple;
  */
 class Component_Filter implements Component
 {
-    /** @var array */
-    private $config = array();
-
     /** @var Laiz_Parser */
     private $parser;
-
-    /** @var Laiz_Request */
-    private $request;
-
-    private $response;
 
     public function __construct(Ini_Simple $parser)
     {

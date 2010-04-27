@@ -223,7 +223,7 @@ class Flexy extends Template
             $options  = array();
             if (!array_key_exists($this->FLEXY_FORM_SELECTED, $var)){
                 // 初期値が指定されていない場合
-                $request = Container::getInstance()->getComponent('laiz\action\Request');
+                $request = Container::getInstance()->getComponent('laiz.action.Request');
                 $selected = $request->get($element->attributes['name']);
                 $selectedKey = null;
                 foreach ($var as $sKey => $sValue){
