@@ -21,7 +21,8 @@ class Action_Help implements Describable
 {
     public function act()
     {
-        echo "command list: laiz.sh\n";
+        echo "command list             : laiz.sh\n";
+        echo "setting project base dir : BASE=path/to/dir/ laiz.sh action\n";
     }
 
     public function describe()
