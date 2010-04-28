@@ -41,8 +41,6 @@ abstract class Template implements View, Singleton
     protected $OUTPUT_404_HEADER;
     protected $TEMPLATE_EXTENSION;
     protected $OUTPUT_TEMPLATE_ERROR;
-    protected $templatePrefix = '';
-    protected $templateSuffix = '';
 
     public function __construct()
     {
@@ -126,10 +124,7 @@ abstract class Template implements View, Singleton
      * @access protected
      */
     private function parseTemplateName($baseName){
-        $templateName = $this->templatePrefix
-            . $baseName
-            . $this->templateSuffix
-            . $this->getTemplateExtension();
+        $templateName = $baseName . $this->getTemplateExtension();
         $templateName = str_replace('_', '/', $templateName);
 
         $fileExists = false;
@@ -188,16 +183,4 @@ abstract class Template implements View, Singleton
     }
 
     abstract protected function getOutput();
-
-    public function setTemplatePrefix($prefix)
-    {
-        $this->templatePrefix = $prefix;
-        return $this;
-    }
-
-    public function setTemplateSuffix($suffix)
-    {
-        $this->templateSuffix = $suffix;
-        return $this;
-    }
 }

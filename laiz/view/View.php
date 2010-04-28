@@ -26,6 +26,4 @@ interface View
     public function setTemplateExtension($templateExtension);
     public function setTemplateDir($dir);
     public function bufferedOutput(Response $res, $template);
-    public function setTemplatePrefix($prefix);
-    public function setTemplateSuffix($suffix);
 }
