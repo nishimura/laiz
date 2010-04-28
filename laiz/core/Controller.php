@@ -40,20 +40,9 @@ class Controller
         $req = $container->get('laiz.action.Request');
 
         // run action
+        // view is action component and run in action runner
         $actionName = $req->initActionName()->getActionName();
         $actionRunner = $container->create('laiz.action.Runner');
-        $ret = $actionRunner->run($actionName);
-
-        // TODO: separate to class of this process and variables
-        if ($ret === 'none:')
-            return;
-
-        // create view object, setting and run
-        $view = $container->create('laiz.view.View');
-        $view->setTemplateDir($ret['templateDir']);
-
-        // run view
-        $res = $container->create('laiz.action.Response');
-        $view->execute($res, $ret['templateName']);
+        $actionRunner->run($actionName);
     }
 }

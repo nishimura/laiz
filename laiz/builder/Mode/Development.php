@@ -20,7 +20,7 @@ use \laiz\core\Configure;
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  * @priority  1000  // This priority is lowest.
  */
-class Mode_Development implements Mode
+class Mode_Development extends Mode_Base
 {
     public function accept()
     {
@@ -29,6 +29,8 @@ class Mode_Development implements Mode
 
     public function buildComponents(Container $container)
     {
+        parent::buildComponents($container);
+
         /**
          * Building and Setting Request Object
          */

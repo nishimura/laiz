@@ -16,7 +16,7 @@ namespace laiz\action;
  * 
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
- * @priority  250
+ * @priority  350
  */
 class Component_Display implements Component
 {

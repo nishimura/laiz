@@ -18,13 +18,15 @@ use \laiz\builder\Singleton;
  * Interface of action class configure.
  *
  * priority:
- *   Initializer: 1
- *   Converter:  10
- *   Validator:  20
- *   Filter   :  80
- *   Action   : 200
- *   Display  : 250
- *   Hidden   : 280
+ *   Initializer   :   1
+ *   Converter     :  10
+ *   Validator     :  20
+ *   Filter        :  80
+ *   Action        : 200
+ *   ViewConfigure : 300
+ *   Display       : 350
+ *   Hidden        : 380
+ *   ViewRunner    : 500
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */

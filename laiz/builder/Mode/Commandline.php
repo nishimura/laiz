@@ -11,8 +11,6 @@
 
 namespace laiz\builder;
 
-use \laiz\core\Configure;
-
 /**
  * Building Objects for Commandline Mode.
  *
@@ -20,7 +18,7 @@ use \laiz\core\Configure;
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  * @priority  980
  */
-class Mode_Commandline implements Mode
+class Mode_Commandline extends Mode_Base
 {
     public function accept()
     {
@@ -32,6 +30,8 @@ class Mode_Commandline implements Mode
 
     public function buildComponents(Container $container)
     {
+        parent::buildComponents($container);
+
         /**
          * Building and Setting Request Object
          */

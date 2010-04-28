@@ -16,7 +16,7 @@ namespace laiz\action;
  * 
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
- * @priority  280
+ * @priority  380
  */
 class Component_Hidden implements Component
 {

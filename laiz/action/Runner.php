@@ -28,6 +28,7 @@ class Runner
 
     private $container;
     private $parser;
+    private $debugLoopCount = 0;
 
     public function __construct(ConfigParser $parser
                                 , Configurables $configurables
@@ -42,9 +43,15 @@ class Runner
 
     public function run($actionName)
     {
+        $this->debugLoopCount++;
+        if ($this->debugLoopCount > 100){
+            echo debug_backtrace();
+            return;
+        }
+
         $opts = $this->parseOpts($actionName);
         $configs = $this->getConfigs($opts['actionName']);
-        return $this->runRoutine($opts['actionName'], $configs, $opts);
+        return $this->runRoutine($configs, $opts);
     }
 
     public function parseOpts($actionName)
@@ -76,23 +83,30 @@ class Runner
         return $this;
     }
 
-    private function runRoutine($action, $configs, $opts)
+    /**
+     * Run action components.
+     *
+     * @param Array $configs get from ini file
+     * @param Array $opts get from Configurable for action and view
+     */
+    private function runRoutine($configs, $opts)
     {
         $ret = null;
-        foreach ($this->components as $component){
-            // Exception objects of setting configuration
-            if ($component instanceof Component_Initializer){
-                $cfg = $configs;
-                goto run;
-            }
-            if ($component instanceof Component_Action){
-                $cfg = $configs;
-                $cfg['actionName'] = $opts['actionName'];
-                $cfg['methodName'] = $opts['methodName'];
-                // used there arguments, property and pathinfo
-                goto run;
-            }
 
+        // setting components configs
+        if (isset($configs['view']['*']))
+            $opts['templateName'] = $configs['view']['*'];
+        $coConfigs = $configs;
+        $coConfigs['action'] = $configs;
+        $coConfigs['action']['actionName'] = $opts['actionName'];
+        $coConfigs['action']['methodName'] = $opts['methodName'];
+        $coConfigs['initializer'] = $configs;
+        $coConfigs['viewconfigure'] = array();
+        $coConfigs['viewconfigure']['templateDir'] = $opts['templateDir'];
+        $coConfigs['viewconfigure']['templateName'] = $opts['templateName'];
+        $coConfigs['viewrunner'] = array();
+
+        foreach ($this->components as $component){
             // unrecognized class name
             if (!preg_match('/([a-zA-Z_]+)$/', get_class($component), $matches))
                 continue;
@@ -100,53 +114,37 @@ class Runner
             $sectionName = strtolower($sectionName);
 
             // is not set in ini file
-            if (!isset($configs[$sectionName]))
+            if (!isset($coConfigs[$sectionName]))
                 continue;
 
-            // General configuration
-            $cfg = $configs[$sectionName];
+            $ret = $component->run($coConfigs[$sectionName]);
+            if ($ret){
+                /*
+                 * parsing return value
+                 */
+                if ($ret === 'none:')
+                    return;
 
-        run:
-            $ret = $component->run($cfg);
-            if ($ret)
-                break;
+                // action redirect
+                if (preg_match('/^redirect:/', $ret)){
+                    $redirect = str_replace('redirect:', '', $ret);
+                    header("Location: $redirect");
+                }else if (preg_match('/^action:/', $ret)){
+                    return $this->clean()->run(str_replace('action:', '', $ret));
+                }else if (isset($configs['result'][$ret])){
+                    return $this->clean()->run($configs['result'][$ret]);
+                }
+
+                // change view
+                else if (isset($configs['view'][$ret])){
+                    $coConfigs['viewconfigure']['templateName']
+                        = $configs['view'][$ret];
+                }else{
+                    // ini file configuration error
+                    trigger_error("Not found [result] or [view] settings by return value [$ret]");
+                }
+            }
         }
-
-        if ($ret === 'none:')
-            return $ret;
-
-        if (!$ret){
-            if (isset($configs['result']['*']))
-                return $this->clean()->run($configs['result']['*']);
-
-            if (isset($configs['view']['*']))
-                return array('templateDir' => $opts['templateDir'],
-                             'templateName' => $configs['view']['*']);
-
-            return array('templateDir' => $opts['templateDir'],
-                         'templateName' => $opts['templateName']);
-        }
-
-        if (preg_match('/^redirect:/', $ret)){
-            $redirect = str_replace('redirect:', '', $ret);
-            header("Location: $redirect");
-            return array('templateDir' => 'Base/templates/',
-                         'templateName' => 'ErrorTemplate'); // ==check== debug
-        }
-
-        if (preg_match('/^action:/', $ret)){
-            return $this->clean()->run(str_replace('action:', '', $ret));
-        }
-
-        if (isset($configs['result'][$ret]))
-            return $this->clean()->run($configs['result'][$ret]);
-
-        if (isset($configs['view'][$ret]))
-            return array('templateDir' => $opts['templateDir'],
-                         'view' => $configs['view'][$ret]);
-
-        trigger_error("Not found [result] or [view] settings by return value [$ret]");
-
     }
 
     public function getConfigs($actionName)

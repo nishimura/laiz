@@ -59,13 +59,14 @@ abstract class Template implements View, Singleton
      * @access public
      * @return string テンプレートを指定する文字列
      */
-    public function execute(Response $res, $baseName){
-        $this->main($res, $baseName)->output();
+    public function execute(Response $res){
+        $this->main($res)->output();
     }
 
-    protected function main(Response $res, $baseName)
+    protected function main(Response $res)
     {
-        $templateName = $this->getTemplateName($baseName);
+        $this->setTemplateDir($res->getTemplateDir());
+        $templateName = $this->parseTemplateName($res->getTemplateName());
         $outputObj = $res->getObject();
         $this->setVariables($templateName, $outputObj);
 
@@ -124,7 +125,7 @@ abstract class Template implements View, Singleton
      * @return string
      * @access protected
      */
-    private function getTemplateName($baseName){
+    private function parseTemplateName($baseName){
         $templateName = $this->templatePrefix
             . $baseName
             . $this->templateSuffix

@@ -1,6 +1,6 @@
 <?php
 /**
- * File of response for view.
+ * Abstract Class of response for View.
  *
  * PHP versions 5.3
  *
@@ -11,18 +11,20 @@
 
 namespace laiz\action;
 
-use \laiz\builder\Singleton;
 use \StdClass;
 
 /**
- * Response for view.
+ * Abstract Class of Response for View.
  * 
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Response implements Singleton
+abstract class Response
 {
-    private $objects = array();
+    protected $objects = array();
+
+    protected $templateDir;
+    protected $templateName;
 
     public function addObject($obj)
     {
@@ -56,6 +58,31 @@ class Response implements Singleton
                 $this->objects[] = $obj;
         }
 
+        $this->templateDir = null;
+        $this->templateName = null;
+
         return $this;
+    }
+
+    public function setTemplateDir($dir)
+    {
+        $this->templateDir = $dir;
+        return $this;
+    }
+
+    public function setTemplateName($tmpl)
+    {
+        $this->templateName = $tmpl;
+        return $this;
+    }
+
+    public function getTemplateDir()
+    {
+        return $this->templateDir;
+    }
+
+    public function getTemplateName()
+    {
+        return $this->templateName;
     }
 }

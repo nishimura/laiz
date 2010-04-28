@@ -21,7 +21,7 @@ use \laiz\action\Response;
  */
 interface View
 {
-    public function execute(Response $res, $template);
+    public function execute(Response $res);
     public function getTemplateExtension();
     public function setTemplateExtension($templateExtension);
     public function setTemplateDir($dir);

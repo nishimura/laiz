@@ -44,6 +44,9 @@ class Component_Action implements Component
         if (!$fileExists)
             return;
 
-        return Component_Runner::run($actionName, $config, $methodName);
+        $ret = Component_Runner::run($actionName, $config, $methodName);
+        if (isset($config['result']['*']) && !$ret)
+            $ret = 'action:' . $config['result']['*'];
+        return $ret;
     }
 }
