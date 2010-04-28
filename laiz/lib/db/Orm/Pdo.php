@@ -165,6 +165,20 @@ class Orm_Pdo implements Orm
     }
 
     /**
+     * return table exists.
+     *
+     * @param string $tableName
+     * @return bool
+     */
+    public function existsTable($tableName = '')
+    {
+        if ($tableName === '')
+            $tableName = $this->tableName;
+
+        return isset($this->tables[$tableName]);
+    }
+
+    /**
      * Store tables information.
      *
      * @param string $configFile

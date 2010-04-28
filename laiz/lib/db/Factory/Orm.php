@@ -2,6 +2,8 @@
 
 namespace laiz\lib\db;
 
+use laiz\util\Inflector;
+
 class Factory_Orm implements Factory
 {
     private $config = array();
@@ -30,6 +32,11 @@ class Factory_Orm implements Factory
         $dao = new Orm_Pdo($db, $tableName);
         $dao->autoCreateConfig($this->config['autoConfig']);
         $dao->setTableConfigs($this->config['configFile']);
+        if (!$dao->existsTable()
+            && $dao->existsTable(Inflector::singularize($tableName))){
+            $dao->setTableName(Inflector::singularize($tableName));
+            $dao = new Iterator_Orm($dao);
+        }
         return $dao;
     }
 }
