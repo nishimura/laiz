@@ -2,10 +2,10 @@
 Laiz: PHP Framework
 ====================
 
-Laiz is MVC framework that is developed with PHP5.3,
+Laiz is framework that is developed with PHP5.3,
 and uses HTML_Template_Flexy.
 
-Laiz is a framework to offer a flexible development environment.
+Laiz offers flexible development environment.
 Current is a development version.
 
 
@@ -28,7 +28,7 @@ Including ``Laiz.php`` and invoke ``laze`` method to run framework::
 Adding template file of top page::
 
    mkdir -p app/Base/templates
-   echo 'Hello World!' > components/Base/templates/Top.html
+   echo 'Hello World!' > app/Base/templates/Top.html
 
 Adding template files with action::
 
