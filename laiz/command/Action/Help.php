@@ -24,41 +24,23 @@ class Action_Help implements Describable
     public $arg1;
     public function act(Helps $helps)
     {
-        if ($this->arg1){
-            $arg = str_replace('.', '\\', $this->arg1);
-        }else{
-            $arg = null; // class name for help
-        }
-
         $action = null; // action class of specified command
         $ret = '';      // return string if not specify
-        foreach ($helps as $help){
-            $className = get_class($help);
-            /* if (!preg_match('/[a-zA-Z0-9_]+$/', get_class($help), $matches))
-             *     continue; */
-            if (($tmp = str_replace('laiz\\command\\Action_', '', $className))
-                !== $className){
-                // special short cut
-                // laiz help cmd => laiz\command\Action_Cmd
-                $className = $tmp;
-                $className{0} = strtolower($className{0});
-            }
-
-            if ($arg && $className === $arg){
+        $arr = $this->parseHelps($helps);
+        foreach ($arr as $name => $help){
+            if ($this->arg1 &&  $name === $this->arg1){
                 $action = $help;
                 break;
             }else{
-                $command = $className;
-                $command = str_replace('\\', '.', $command);
-                $ret .= '  laiz help ' . $command . "\n";
+                $ret .= '  laiz help ' . $name . "\n";
             }
         }
 
-        if ($arg && $action){
+        if ($this->arg1 && $action){
             echo $action->help() . "\n";
             return;
-        }else if ($arg){
-            echo "Can not find $arg class.\n";
+        }else if ($this->arg1){
+            echo "Can not find $this->arg1 class.\n";
             return;
         }
 
@@ -71,6 +53,38 @@ class Action_Help implements Describable
 
         // each help of class
         echo $ret;
+    }
+
+    private function parseHelps(Helps $helps)
+    {
+        $ret = array();
+        foreach ($helps as $help){
+            $fullName = get_class($help);
+            $fullName = str_replace('\\', '.', $fullName);
+
+            if (($cmd = str_replace('laiz.command.Action_', '', $fullName))
+                !== $fullName){
+                // special short name
+                // laiz help cmd => laiz\command\Action_Cmd
+                $cmd{0} = strtolower($cmd{0});
+                if (!isset($ret[$cmd])){
+                    $ret[$cmd] = $help;
+                    continue;
+                }
+            }
+
+            if (preg_match('/[a-zA-Z0-9_]+$/', $fullName, $matches)){
+                // short name
+                $shortName = $matches[0];
+                if (!isset($ret[$shortName])){
+                    $ret[$shortName] = $help;
+                    continue;
+                }
+            }
+
+            $ret[$fullName] = $help;
+        }
+        return $ret;
     }
 
     public function describe()
