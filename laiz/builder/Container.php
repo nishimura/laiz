@@ -125,7 +125,7 @@ class Container
         // ==debug==
         //$start = microtime(true);
 
-        $projectDir = $base['PROJECT_BASE_DIR'];
+        $projectDir = $base['PROJECT_BASE_DIR'] . 'app/';
         $laizDir = dirname(dirname(__FILE__));
 
         // if not parsed
