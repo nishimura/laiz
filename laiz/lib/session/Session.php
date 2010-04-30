@@ -11,13 +11,15 @@
 
 namespace laiz\lib\session;
 
+use \laiz\builder\Singleton;
+
 /**
  * Interface of framework session.
  * 
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-interface Session
+interface Session extends Singleton
 {
     public function get($name);
     public function add($name, $value);
