@@ -131,8 +131,7 @@ class Container
         // if not parsed
         $interfaces = array();
         $interfaces = $this->getAggregatable($projectDir, $interfaces);
-        if (!class_exists('laiz\action\Runner', false))
-            $interfaces = $this->getAggregatable($laizDir, $interfaces);
+        $interfaces = $this->getAggregatable($laizDir, $interfaces);
 
         $this->registerInterfaces($interfaces);
 
