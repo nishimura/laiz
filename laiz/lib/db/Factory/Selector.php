@@ -11,7 +11,8 @@
 
 namespace laiz\lib\db;
 
-use laiz\core\Configure;
+use \laiz\core\Configure;
+use \laiz\command\Help;
 
 /**
  * Selector of Db_Factory Class.
@@ -19,7 +20,7 @@ use laiz\core\Configure;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Factory_Selector implements Factory
+class Factory_Selector implements Factory, Help
 {
     protected $config;
 
@@ -72,5 +73,12 @@ class Factory_Selector implements Factory
     public function get($name)
     {
         return $this->create($name);
+    }
+
+    public function help()
+    {
+        $docFile = str_replace('_Selector', '', __CLASS__);
+        $docFile = str_replace('\\', '/', $docFile) . '.md';
+        return file_get_contents('doc/' . $docFile, FILE_USE_INCLUDE_PATH);
     }
 }

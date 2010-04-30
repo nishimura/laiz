@@ -43,6 +43,7 @@ class Action_Default
             $className = get_class($describe);
             $className = str_replace('laiz\\command\\Action_', '', $className);
             $className = sprintf("%-12s", $className);
+            $className{0} = strtolower($className{0});
             echo '  laiz.sh ' . $className . ": " . $describe->describe();
             echo "\n";
         }

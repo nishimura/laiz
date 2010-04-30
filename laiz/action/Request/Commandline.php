@@ -50,7 +50,7 @@ class Request_Commandline implements Request
 
             default:
                 if ($argIndex === 0)
-                    $this->add('action', $arg);
+                    $this->add('action', ucfirst($arg));
                 else
                     $this->add('arg' . $argIndex, $arg);
                 $argIndex++;
