@@ -127,7 +127,7 @@ class Container
 
         $projectDir = $base['PROJECT_BASE_DIR'] . 'app/';
         if (!is_dir($projectDir)){
-            trigger_error("PROJECT_BASE_DIR: $projectDir is not directory."
+            trigger_error("APP_DIR: $projectDir is not directory."
                           , E_USER_ERROR);
             return;
         }
