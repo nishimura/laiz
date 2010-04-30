@@ -24,7 +24,7 @@ use \laiz\builder\Object as Builder;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Action_ActionTest implements Describable
+class Action_Test_Action
 {
     public $h;
     public $help;
@@ -32,8 +32,10 @@ class Action_ActionTest implements Describable
     public $v;
     public function act(ActionTests $tests, Container $container)
     {
-        if ($this->h || $this->help)
-            return $this->help();
+        if ($this->h || $this->help){
+            echo $this->help();
+            return;
+        }
 
         $this->allTest($tests, $container);
     }
@@ -101,14 +103,10 @@ class Action_ActionTest implements Describable
 
     public function help()
     {
-        echo "laiz.sh ActionTest    : All Action Tests.\n";
-        echo "laiz.sh ActionTest -a : View Success.\n";
-        echo "laiz.sh ActionTest -v : View Verbose.\n";
-        echo "\n";
-    }
-
-    public function describe()
-    {
-        return 'Run action test. -h option is display detail.';
+        $ret
+            = "laiz.sh test action    : All Action Tests.\n"
+            . "laiz.sh test action -a : View Success.\n"
+            . "laiz.sh test action -v : View Verbose.\n";
+        return $ret;
     }
 }

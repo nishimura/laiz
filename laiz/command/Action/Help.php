@@ -19,7 +19,7 @@ use \laiz\lib\aggregate\laiz\command\Helps;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Action_Help implements Describable, Help
+class Action_Help implements Describable
 {
     public $arg1;
     public function act(Helps $helps)
