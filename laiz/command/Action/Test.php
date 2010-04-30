@@ -39,10 +39,10 @@ class Action_Test implements Describable, Help
     public function help()
     {
         $ret
-            = "laiz.sh test action    : Testing Actions.\n"
-            . "laiz.sh test action -h : Show more help.\n"
-            . "laiz.sh test unit      : Testing Unit Testcases.\n"
-            . "laiz.sh test unit -h   : Show more help.";
+            = "laiz test action    : Testing Actions.\n"
+            . "laiz test action -h : Show more help.\n"
+            . "laiz test unit      : Testing Unit Testcases.\n"
+            . "laiz test unit -h   : Show more help.";
         return $ret;
     }
 }

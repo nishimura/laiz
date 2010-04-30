@@ -35,7 +35,7 @@ class Action_Default
                 return 'action:Help';
             }
         }
-        echo 'Laiz ', $this->_version;
+        echo 'Laiz ', $this->_version . "\n";
         echo "\n";
 
         echo "COMMANDS\n";
@@ -44,7 +44,7 @@ class Action_Default
             $className = str_replace('laiz\\command\\Action_', '', $className);
             $className = sprintf("%-12s", $className);
             $className{0} = strtolower($className{0});
-            echo '  laiz.sh ' . $className . ": " . $describe->describe();
+            echo '  laiz ' . $className . ": " . $describe->describe();
             echo "\n";
         }
         echo "\n";

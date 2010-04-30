@@ -44,8 +44,8 @@ class Action_Test_Unit
     public function help()
     {
         $ret
-            = "laiz.sh UnitTest          : All Tests.\n"
-            . "laiz.sh UnitTest <Class>  : Unit Test.";
+            = "laiz UnitTest          : All Tests.\n"
+            . "laiz UnitTest <Class>  : Unit Test.";
         return $ret;
     }
 }

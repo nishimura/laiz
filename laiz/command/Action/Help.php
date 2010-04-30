@@ -50,9 +50,7 @@ class Action_Help implements Describable
             }else{
                 $command = $className;
                 $command = str_replace('\\', '.', $command);
-                $ret .= '  laiz.sh help ' . $command . "\n";
-                    /* . sprintf('%-32s', $command)
-                     * . ': '. $help->help() . "\n"; */
+                $ret .= '  laiz help ' . $command . "\n";
             }
         }
 

@@ -104,9 +104,9 @@ class Action_Test_Action
     public function help()
     {
         $ret
-            = "laiz.sh test action    : All Action Tests.\n"
-            . "laiz.sh test action -a : View Success.\n"
-            . "laiz.sh test action -v : View Verbose.\n";
+            = "laiz test action    : All Action Tests.\n"
+            . "laiz test action -a : View Success.\n"
+            . "laiz test action -v : View Verbose.\n";
         return $ret;
     }
 }
