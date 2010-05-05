@@ -34,6 +34,8 @@ class Mode_Development extends Mode_Base
         /**
          * Building and Setting Request Object
          */
+        if ($container->get('laiz.action.Request'))
+            return;
         $req = $container->create('laiz.action.Request_Web',
                                   'laiz.action.Request');
         $reqArgs = Configure::get('laiz.action.Request');

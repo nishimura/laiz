@@ -101,7 +101,6 @@ class Container
                 continue;
 
             $mode->buildComponents($this);
-            break;
         }
     }
 
