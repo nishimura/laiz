@@ -33,7 +33,6 @@ class Component_ViewRunner implements Component
     public function run(Array $config)
     {
         $view = $this->container->create('laiz.view.View');
-        $view->setTemplateDir($this->response->getTemplateDir());
         $view->execute($this->response);
     }
 }
