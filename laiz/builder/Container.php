@@ -240,18 +240,21 @@ class Container
     public function create($componentName, $registerName = '')
     {
         $componentName = str_replace('.', '\\', $componentName);
+        if (strlen($registerName) > 0)
+            $registerName = str_replace('.', '\\', $registerName);
+        else
+            $registerName = $componentName;
+
+
         // コンポーネントが既に存在する場合はここでリターン
-        if (is_object($this->get($componentName))){
-            return $this->get($componentName);
+        if (is_object($this->get($registerName))){
+            return $this->get($registerName);
         }
 
         $obj = Object::build($componentName);
 
-        if (strlen($registerName) > 0)
-            $componentName = str_replace('.', '\\', $registerName);
-
         if ($obj instanceof Singleton)
-            $this->register($obj, $componentName);
+            $this->register($obj, $registerName);
         return $obj;
     }
 
