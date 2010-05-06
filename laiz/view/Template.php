@@ -21,7 +21,7 @@ use \laiz\action\Response;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-abstract class Template implements View, Singleton
+abstract class Template implements View
 {
     /**
      * @var string $_template
