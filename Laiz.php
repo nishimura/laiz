@@ -26,7 +26,6 @@ class Laiz
         /** setting base include path */
         $laizDir = dirname(__FILE__) . '/';
         ini_set('include_path',
-                $projectDir . 'app' . PATH_SEPARATOR .
                 $laizDir . PATH_SEPARATOR .
                 ini_get('include_path'));
 
@@ -36,7 +35,12 @@ class Laiz
 
         /** get base setting */
         Configure::setProjectDir($projectDir);
-        $configs = Configure::get();
+        $configs = Configure::get('base');
+
+        $appDir = rtrim($configs['APP_DIR'], '/');
+        ini_set('include_path',
+                $appDir . PATH_SEPARATOR .
+                ini_get('include_path'));
 
         /** php.ini */
         $phpIniConfigs = Configure::get('ini');

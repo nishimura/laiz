@@ -124,9 +124,10 @@ class Container
         // ==debug==
         //$start = microtime(true);
 
-        $projectDir = $base['PROJECT_BASE_DIR'] . 'app/';
+        $projectDir = $base['APP_DIR'];
         if (!is_dir($projectDir)){
-            trigger_error("APP_DIR: $projectDir is not directory."
+            trigger_error("APP_DIR: $projectDir is not directory. "
+                          . "APP_DIR is configurable in config.ini"
                           , E_USER_ERROR);
             return;
         }

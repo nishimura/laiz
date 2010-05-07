@@ -108,7 +108,7 @@ abstract class Template implements View
     {
         $frameworkBase = dirname(__FILE__) . '/';
         $config = Configure::get('base');
-        $projectBase = $config['PROJECT_BASE_DIR'] . 'app/';
+        $projectBase = $config['APP_DIR'];
 
         $dirs = array();
         foreach ((array)$dir as $d)
