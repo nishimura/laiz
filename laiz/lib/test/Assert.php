@@ -30,13 +30,9 @@ class Assert
     private $failureCount = 0;
     private $successCount = 0;
 
-    private $baseDir;
-
     public function __construct($mode = self::VIEW_FAILURE)
     {
         $this->mode = $mode;
-        $base = Configure::get('base');
-        $this->baseDir = $base['PROJECT_BASE_DIR'];
     }
 
     private function toString($value)
