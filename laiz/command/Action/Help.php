@@ -25,9 +25,19 @@ class Action_Help implements Describable
     public function act(Helps $helps)
     {
         $action = null; // action class of specified command
-        $ret = '';      // return string if not specify
+        $ret = "  *** application ***\n";  // return string if not specify
         $arr = $this->parseHelps($helps);
-        foreach ($arr as $name => $help){
+        foreach ($arr['app'] as $name => $help){
+            if ($this->arg1 &&  $name === $this->arg1){
+                $action = $help;
+                break;
+            }else{
+                $ret .= '  laiz help ' . $name . "\n";
+            }
+        }
+
+        $ret .= "\n  *** framework ***\n";
+        foreach ($arr['laiz'] as $name => $help){
             if ($this->arg1 &&  $name === $this->arg1){
                 $action = $help;
                 break;
@@ -45,30 +55,32 @@ class Action_Help implements Describable
         }
 
         // default help
-        echo "setting project base dir : BASE=path/to/dir/ laiz.sh command\n";
-        echo "                      or : export BASE=path/to/dir\n";
-        echo "                      or : export PROJECT_BASE_DIR=path/to/dir\n";
-        echo "\n";
-        echo "HELP COMMANDS\n";
-
         // each help of class
+        echo "HELP COMMANDS\n";
         echo $ret;
     }
 
     private function parseHelps(Helps $helps)
     {
         $ret = array();
+        $ret['laiz'] = array();
+        $ret['app']  = array();
         foreach ($helps as $help){
             $fullName = get_class($help);
             $fullName = str_replace('\\', '.', $fullName);
+
+            if (preg_match('/^' . preg_quote('laiz.') . '/', $fullName))
+                $base = 'laiz';
+            else
+                $base = 'app';
 
             if (($cmd = str_replace('laiz.command.Action_', '', $fullName))
                 !== $fullName){
                 // special short name
                 // laiz help cmd => laiz\command\Action_Cmd
                 $cmd{0} = strtolower($cmd{0});
-                if (!isset($ret[$cmd])){
-                    $ret[$cmd] = $help;
+                if (!isset($ret[$base][$cmd])){
+                    $ret[$base][$cmd] = $help;
                     continue;
                 }
             }
@@ -76,13 +88,13 @@ class Action_Help implements Describable
             if (preg_match('/[a-zA-Z0-9_]+$/', $fullName, $matches)){
                 // short name
                 $shortName = $matches[0];
-                if (!isset($ret[$shortName])){
-                    $ret[$shortName] = $help;
+                if (!isset($ret[$base][$shortName])){
+                    $ret[$base][$shortName] = $help;
                     continue;
                 }
             }
 
-            $ret[$fullName] = $help;
+            $ret[$base][$fullName] = $help;
         }
         return $ret;
     }
