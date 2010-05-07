@@ -14,9 +14,9 @@
       <p>{message}</p>
       {if:logined}
       <p>Logined!</p>
-      <p><a href="/Logout">Logout</a></p>
+      <p><a href="/Logout{memcache}">Logout</a></p>
       {else:}
-      <form action="/Login" method="POST">
+      <form action="/Login{memcache}" method="POST">
         name: <input type="text" name="name" value=""> foo
         <br>
         pass: <input type="password" name="password" value=""> bar

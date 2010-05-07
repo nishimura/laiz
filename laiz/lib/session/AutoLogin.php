@@ -11,8 +11,10 @@
 
 namespace laiz\lib\session;
 
-use \laiz\core\Configure;
-use \PDO;
+use \laiz\lib\data\DataStore;
+use \laiz\lib\data\DataStore_Sqlite;
+
+use \laiz\command\Help;
 
 /**
  * Simple auto login manager of user login.
@@ -20,13 +22,12 @@ use \PDO;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class AutoLogin
+class AutoLogin implements Help
 {
     /** @var SessionUtils */
     private $session;
 
-    /** @var string sqlite database file */
-    private $dbFile;
+    private $dataSource;
 
     /** @var string */
     const COOKIE_KEY = '__auto_login__';
@@ -49,40 +50,26 @@ class AutoLogin
         $this->session = $sess;
     }
 
-    private function createDsn()
+    public function setDataStore(DataStore $ds)
     {
-        $configs = Configure::get('base');
-        $dsn = 'sqlite:'.$configs['CACHE_DIR'].'userlogin.sq3';
-        return $dsn;
+        $this->dataSource = $ds;
     }
 
-    private function createPdo($dsn = null)
+    public function getDataStore()
     {
-        $dsn = $dsn ? $dsn : $this->createDsn();
-        $pdo = new PDO($dsn);
-        return $pdo;
-    }
+        if ($this->dataSource instanceof DataStore)
+            return $this->dataSource;
 
-    private function initDatabase($pdo)
-    {
-        // check table
-        $tablesQuery = 'select name from sqlite_master where type=\'table\' and name = \'auto_login\'';
-        $stmt = $pdo->query($tablesQuery);
-        if ($stmt)
-            $row = $stmt->fetch();
-        if (!$stmt || !isset($row['name']) || $row['name'] !== 'auto_login'){
-            $stmt = null;
-            $ret = $pdo->exec('CREATE TABLE auto_login(user_id, key, expire, data)');
-
-            $info = $pdo->errorInfo();
-            if ($info[0] !== '00000'){
-                trigger_error('Failed to start session of auto login: ['
-                              . $info[0] . '] ' . $info[2], E_USER_WARNING);
-                return false;
-            }
+        // create default data source.
+        // default is sqlite.
+        $ds = new DataStore_Sqlite();
+        if (!$ds->setDsn(array('scope' => 'laiz_session_autologin'))){
+            trigger_error('Cannot create data source.', E_USER_WARNING);
+            return null;
         }
 
-        return true;
+        $this->dataSource = $ds;
+        return $ds;
     }
 
     /**
@@ -91,75 +78,39 @@ class AutoLogin
      * @author Satoshi Nishimura <nishim314@gmail.com>
      * @return bool
      */
-    public function login(Login $login, $user, $pass, $auto,
-                          $expire = null, $dsn = null, $path = null)
+    public function login($id, $auto, $expire = null, $path = null)
     {
-        if (!$id = $login->login($user, $pass))
-            return false;
-
         $expire = $expire !== null ? $expire : 3600*24*7;
 
-        $pdo = $this->createPdo($dsn);
+        $ds = $this->getDataStore();
 
         $path = $path ? $path : '/';
 
         if ($auto)
-            $this->setupAutoLogin($pdo, $id, $path, $expire);
+            $this->setupAutoLogin($ds, $id, $path, $expire);
         else
-            $this->cleanupAutoLogin($pdo, $path);
+            $this->cleanupAutoLogin($ds, $path);
 
         $this->setLogined();
         return true;
     }
 
     /**
-     * Store session data to auto login database.
-     */
-    public function store($userId, $data, $expire = 604800,
-                          $dsn = null, $path = '/')
-    {
-        $pdo = $this->createPdo($dsn);
-        $this->setupAutoLogin($pdo, $userId, $path, $expire, $data);
-    }
-
-    /**
-     *
-     * @param PDO $pdo
      * @param int $expire default is 3600*24*7
      * @param string $path cookie's path
      */
-    private function setupAutoLogin(PDO $pdo, $userId, $path = '/', $expire = 604800, $data = null){
-        if (!$this->initDatabase($pdo)){
-            trigger_error('Cannot create auto login table.', E_USER_WARNING);
-            return false;
-        }
-
+    private function setupAutoLogin(DataStore $ds, $id, $path = '/', $expire = 604800, $data = null){
         // register information of cookie to database.
         $loginKey = sha1(uniqid().mt_rand());
-        $sql = "insert into auto_login(user_id, key, expire, data) values ("
-            . $pdo->quote($userId) . ', '
-            . $pdo->quote($loginKey) . ', '
-            . $pdo->quote(date('Y-m-d H:i:s', time()+$expire)) . ', '
-            . $pdo->quote(serialize($data))
-            . ')';
-        // TODO: insert data => $_SESSION
-        $ret = $pdo->exec($sql);
-
-        $info = $pdo->errorInfo();
-        if ($info[0] !== '00000'){
-            trigger_error('Failed to start session of auto login: ['
-                          . $info[0] . '] ' . $info[2], E_USER_WARNING);
-            return false;
-        }
 
         // send auto login cookie.
         setcookie(self::COOKIE_KEY, $loginKey, time() + $expire, $path);
 
         // set user id to session.
-        $this->session->add(self::USER_ID_KEY, $userId);
+        $this->session->add(self::USER_ID_KEY, $id);
     }
 
-    private function cleanupAutoLogin(PDO $pdo, $path){
+    private function cleanupAutoLogin(DataStore $ds, $path){
         if (!isset($_COOKIE[self::COOKIE_KEY]))
             return;
         
@@ -167,9 +118,7 @@ class AutoLogin
         setcookie(self::COOKIE_KEY, '', time() - 3600, $path);
 
         // delete old information in database.
-        $sql = 'delete from auto_login where key = ' . $pdo->quote($_COOKIE[self::COOKIE_KEY])
-            . ' or expire < ' . $pdo->quote(date('Y-m-d H:i:s')) . ';'; // delete old data
-        $pdo->exec($sql);
+        $ds->delete($_COOKIE[self::COOKIE_KEY]);
     }
 
     private function isStartedSession(){
@@ -191,66 +140,48 @@ class AutoLogin
         return $this->session->get(self::USER_ID_KEY);
     }
 
-    public function logout($dsn = null, $path = '/'){
-        $dsn = $dsn ? $dsn : $this->createDsn();
-        $pdo = new PDO($dsn);
+    public function logout($path = '/'){
+        $ds = $this->getDataStore();
 
         $this->session->add(self::LOGINED_KEY, false);
 
-        $this->cleanupAutoLogin($pdo, $path);
+        $this->cleanupAutoLogin($ds, $path);
     }
 
     /**
      *
      * @param int $expire
      * @param string $path
-     * @param string $dsn
      * @return array(bool, bool, int, array) startNow, isLogined, userId, data
      */
-    public function autoLoginFilter($expire = 604800, $path = '/', $dsn = null){
-        // First argument is dsn, not PDO object.
-        // PDO object doesn't need in alot of cases.
-        $data = array();
+    public function autoLoginFilter($expire = 604800, $path = '/'){
         // Return when session is started.
         if ($this->isStartedSession())
-            return array(false, $this->isLogined(), $this->getUserId(), $data);
+            return array(false, $this->isLogined(), $this->getUserId());
 
         if (!empty($_COOKIE[self::COOKIE_KEY])){
-            $pdo = $this->createPdo($dsn);
+            $ds = $this->getDataStore();
+            $value = $ds->get($_COOKIE[self::COOKIE_KEY]);
 
-            if (!$this->initDatabase($pdo)){
-                trigger_error('Cannot create auto login table.', E_USER_WARNING);
-                return array(false, false, null, $data);
-            }
+            // set login flag
+            $this->setLogined();
 
-            $sql = 'select * from auto_login where key = '
-                . $pdo->quote($_COOKIE[self::COOKIE_KEY]) . ' and expire > '
-                . $pdo->quote(date('Y-m-d H:i:s')) . ';';
-            
-            $stmt = $pdo->query($sql);
-            if ($stmt){
-                $ret = $stmt->fetch();
-                $stmt = null;           // free statement resource
-                if ($ret['key'] === $_COOKIE[self::COOKIE_KEY]){
-                    // restore data
-                    $data = unserialize($ret['data']);
+            // delete old cookie.
+            $this->cleanupAutoLogin($ds, $path);
 
-                    // set login flag
-                    $this->setLogined();
-
-                    // delete old cookie.
-                    $this->cleanupAutoLogin($pdo, $path);
-
-                    // setup auto login
-                    $this->setupAutoLogin($pdo, $ret['user_id'], $path, $expire);
-                }
-            }
+            // setup auto login
+            $this->setupAutoLogin($ds, $value, $path, $expire);
         }
 
         // start session
         $this->startSession();
 
-        return array(true, $this->isLogined(), $this->getUserId(), $data);
+        return array(true, $this->isLogined(), $this->getUserId());
     }
 
+    public function help()
+    {
+        $docFile = str_replace('\\', '/', __CLASS__) . '.md';
+        return file_get_contents('doc/' . $docFile, FILE_USE_INCLUDE_PATH);
+    }
 }

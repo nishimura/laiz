@@ -22,6 +22,7 @@ interface Orm
     public function getVo($where = null);
     public function getVos($options = array());
     public function save($vo);
+    public function delete($vo);
     public function createVo();
     public function currval();
     public function begin();

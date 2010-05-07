@@ -9,13 +9,14 @@ class Base_Action_Login
     public $password;
     public $auto;
 
-    public function act(Session_Login $login, AutoLogin $auto, Result $res)
+    public function act(Session_Login $login, AutoLogin $auto)
     {
-        $ret = $auto->login($login, $this->name, $this->password, $this->auto);
-        if (!$ret){
+        if (!$login->login($this->name, $this->password)){
             $res->message = 'login failed!'; // for output
             return 'action:AutoLogin';
         }
+        
+        $ret = $auto->login($this->name, $this->auto);
 
         return 'redirect:/AutoLogin';
     }

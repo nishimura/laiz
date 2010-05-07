@@ -34,9 +34,13 @@ class DataStore_File implements DataStore
 
     }
 
-    public function put($key, $vlaue, $expire = null)
+    public function set($key, $vlaue, $expire = null)
     {
 
+    }
+
+    public function delete($key)
+    {
     }
 
     public function get($key)

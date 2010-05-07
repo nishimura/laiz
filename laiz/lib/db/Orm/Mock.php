@@ -97,6 +97,17 @@ class Orm_Mock implements Orm
         $this->vos[$vo->$keyName] = $vo;
     }
 
+    public function delete($vo)
+    {
+        $keyName = $this->primaryKeyName;
+        if (is_object($vo))
+            $key = $vo->$keyName;
+        else
+            $key = $vo;
+        unset($this->vos[$key]);
+        return 1;
+    }
+
     public function currval()
     {
         $max = 0;

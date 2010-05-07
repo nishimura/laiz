@@ -323,7 +323,7 @@ class Orm_Pdo implements Orm
         $voClassSuffix = implode('', array_map('ucfirst', explode('_', $tableName)));
         $className = 'Vo_'. $voClassSuffix;
 
-        if (!class_exists($className, false)){
+        if (!class_exists('laiz\\lib\\db\\' . $className, false)){
             // Create VO instance
             $fileName = $this->getComponentDir() . 'lib/db/Vo/'. $voClassSuffix . '.php';
             if (file_exists($this->getComponentDir() . $fileName)){
@@ -411,7 +411,7 @@ class Orm_Pdo implements Orm
             return;
         }
         
-        if (is_numeric($where)){
+        if (is_numeric($where) || is_string($where)){
             // get vo by primary key
             if (!isset($this->tables[$this->tableName]['pKey'])){
                 trigger_error('Not defined primary key in ' . $this->tableName . ' table.',

@@ -28,9 +28,15 @@ interface DataStore
     /**
      * @param string $key
      * @param mixed $value
-     * @return DataStore
+     * @return bool
      */
-    public function put($key, $value, $expire = null);
+    public function set($key, $value, $expire = null);
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function delete($key);
 
     /**
      * @return mixed

@@ -30,22 +30,32 @@ class DataStore_Memcache implements DataStore
 
     public function setDsn(Array $dsn)
     {
+        // default options
         $opts = array('host' => 'localhost',
                       'port' => 11211,
-                      'prefix' => '');
+                      'scope' => '');
+
+        // set user options
         foreach ($opts as $key => $value)
             if (isset($dsn[$key]))
                 $opts[$key] = $dsn[$key];
 
-        $this->prefix = $opts['prefix'];
+        if (!$opts['scope'])
+            $opts['scope'] = 'default';
+
+        $this->prefix = $opts['scope'] . '.';
         return $this->memcache->connect($opts['host'], $opts['port']);
     }
 
-    public function put($key, $value, $expire = null)
+    public function set($key, $value, $expire = null)
     {
-        $this->memcache->set($this->prefix . $key, $value,
-                             MEMCACHE_COMPRESSED, $expire);
-        return $this;
+        return $this->memcache->set($this->prefix . $key, $value,
+                                    MEMCACHE_COMPRESSED, $expire);
+    }
+
+    public function delete($key)
+    {
+        return $this->memcache->delete($key);
     }
 
     public function get($key)
@@ -55,7 +65,8 @@ class DataStore_Memcache implements DataStore
 
     public function clear()
     {
-        $this->memcache->flush();
+        // This method clear all data on the memcache server.
+        // $this->memcache->flush();
         return $this;
     }
 }
