@@ -46,6 +46,11 @@ class Url
         $this->host = $host;
     }
 
+    public function cutSubdomain()
+    {
+        $this->host = preg_replace('/^[^.]+\./', '', $this->host);
+    }
+
     public function getRoot()
     {
         $ret = '';
