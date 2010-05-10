@@ -109,7 +109,7 @@ class Assert
             . ' line ' . $line['line']
             . ', ' . $line['class']
             . '#' . $line['function']
-            . $line['assert'] . ', (' . $msg . ') '
+            . $line['assert'] . ', (' . escapeshellcmd($msg) . ') '
             ;
 
         if ($this->mode & self::VIEW_FAILURE)
@@ -126,8 +126,9 @@ class Assert
             $msg = $this->decorate('Success! ', 'green')
                 . ' in ' . $line['file']
                 . ' line ' . $line['line']
-                . ', (' . $msg . ')'
+                . ', (' . escapeshellcmd($msg) . ')'
                 ;
+
             echo `echo -e '$msg'`;
         }
         return $this;
