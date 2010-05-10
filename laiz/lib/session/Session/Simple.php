@@ -17,7 +17,7 @@ namespace laiz\lib\session;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Simple implements Session
+class Session_Simple implements Session
 {
     /** @var bool */
     private $isStarted = false;
