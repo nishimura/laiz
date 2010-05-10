@@ -74,7 +74,7 @@ class Action_Test_Action
             /*
              * Testing result
              */
-            $ret = Component_Runner::exec($test, $opts['methodName']);
+            //$ret = Component_Runner::exec($test, $opts['methodName']);
             //==TODO==
 
             /*
