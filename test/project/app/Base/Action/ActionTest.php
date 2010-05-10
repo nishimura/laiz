@@ -32,6 +32,16 @@ class Base_Action_ActionTest implements ActionTest
         $a->equal($this->prop3->bar, 'baz');
     }
 
+    /**
+     * @ActionTest request:prop1=request string
+     * @ActionTest request:prop2=request string
+     */
+    public function test3(Assert $a)
+    {
+        $a->equal($this->prop1, 3); // override in act method
+        $a->equal($this->prop2, 'request string');
+    }
+
     public function getActionName()
     {
         return 'ActionTest';

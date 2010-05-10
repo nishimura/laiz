@@ -32,8 +32,8 @@ interface ActionTest extends Aggregatable
     // /**
     //  * Test Action.
     //  *
-    //  * @ActionTest request:argName=argValue  ==TODO== annotation
-    //  * @ActionTest return:returnValue
+    //  * @ActionTest request:argName=argValue
+    //  * @ActionTest return:returnValue  ==TODO== annotation
     //  */
     // public function test*(Assert $assert);
     //

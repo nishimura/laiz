@@ -18,6 +18,8 @@ use \laiz\action\Component_Runner;
 use \laiz\builder\Container;
 use \laiz\builder\Object as Builder;
 
+use \ReflectionObject;
+
 /**
  * Run Unit Test.
  *
@@ -72,12 +74,6 @@ class Action_Test_Action
                 $test->testProp($assert);
 
             /*
-             * Testing result
-             */
-            //$ret = Component_Runner::exec($test, $opts['methodName']);
-            //==TODO==
-
-            /*
              * Testing Run
              */
             $methods = get_class_methods($test);
@@ -90,6 +86,21 @@ class Action_Test_Action
                 // new clean instance
                 $action = $container->create($opts['actionName']);
                 Component_Runner::prepare($action, $configs);
+                // initialize request arguments
+                $ref = new ReflectionObject($action);
+                $refMethod = $ref->getMethod($method);
+                $comment = $refMethod->getDocComment();
+                if ($comment && preg_match_all("/ActionTest +request:(.+)/", $comment, $matches)){
+                    foreach ($matches[1] as $line){
+                        $requests = explode('=', $line, 2);
+                        if (count($requests) !== 2)
+                            continue;
+                        if (!property_exists($action, $requests[0]))
+                            continue;
+                        $action->$requests[0] = $requests[1];
+                    }
+                }
+
                 Component_Runner::exec($action, $opts['methodName']);
 
                 $action->$method($assert);
