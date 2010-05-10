@@ -55,6 +55,12 @@ class Url
         return $this;
     }
 
+    public function addSubdomain($domain)
+    {
+        $this->host = $domain . '.' . $this->host;
+        return $this;
+    }
+
     public function getRoot()
     {
         $ret = '';
