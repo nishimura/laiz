@@ -95,8 +95,8 @@ class Assert
         $ret = array('file' => $file,
                      'line' => $pre['line'],
                      'function' => $hit['function'],
-                     'class' => $hit['class'],
-                     'assert' => $pre['function']);
+                     'class' => str_replace('\\', '.', $hit['class']),
+                     'assert' => str_replace('\\', '.', $pre['function']));
         return $ret;
     }
 
@@ -105,11 +105,11 @@ class Assert
         $this->failureCount++;
         $line = $this->getLine();
         $msg = $this->decorate('Failure! ', 'red')
-            . $line['assert'] . ' (' . $msg . ') '
             . ' in ' . $line['file']
             . ' line ' . $line['line']
             . ', ' . $line['class']
             . '#' . $line['function']
+            . $line['assert'] . ', (' . $msg . ') '
             ;
 
         if ($this->mode & self::VIEW_FAILURE)
@@ -124,9 +124,9 @@ class Assert
         if ($this->mode & self::VIEW_SUCCESS){
             $line = $this->getLine();
             $msg = $this->decorate('Success! ', 'green')
-                . '(' . $msg . ')'
                 . ' in ' . $line['file']
                 . ' line ' . $line['line']
+                . ', (' . $msg . ')'
                 ;
             echo `echo -e '$msg'`;
         }
