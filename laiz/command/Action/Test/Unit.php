@@ -58,9 +58,6 @@ class Action_Test_Unit
     private function allTest(UnitTests $tests, Assert $assert)
     {
         foreach ($tests as $test){
-            if (method_exists($test, 'setup'))
-                $test->setup($assert);
-
             $methods = get_class_methods($test);
             foreach ($methods as $method){
                 if (!preg_match('/^test/', $method))
@@ -68,11 +65,15 @@ class Action_Test_Unit
                 if ($method === 'setup' || $method === 'cleanup')
                     continue;
 
-                $test->$method($assert);
-            }
 
-            if (method_exists($test, 'cleanup'))
-                $test->cleanup($assert);
+                if (method_exists($test, 'setup'))
+                    $test->setup($assert);
+
+                $test->$method($assert);
+
+                if (method_exists($test, 'cleanup'))
+                    $test->cleanup($assert);
+            }
         }
 
         $assert->showResult();
