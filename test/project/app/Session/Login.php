@@ -2,7 +2,7 @@
 
 use laiz\lib\session\Login;
 
-class Session_Login implements Login
+class Session_Login
 {
     public function login($name, $password)
     {
