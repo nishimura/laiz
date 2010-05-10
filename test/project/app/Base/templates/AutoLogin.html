@@ -13,7 +13,7 @@
     <article>
       <p>{message}</p>
       {if:logined}
-      <p>Logined!</p>
+      <p>{loginMessage}</p>
       <p><a href="/Logout{memcache}">Logout</a></p>
       {else:}
       <form action="/Login{memcache}" method="POST">

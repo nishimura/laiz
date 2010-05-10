@@ -6,12 +6,19 @@ use laiz\lib\data\DataStore_Memcache;
 class Filter_LoginMemcache
 {
     public $logined;
+    public $loginMessage;
     public function filter(AutoLogin $auto)
     {
         $ds = new DataStore_Memcache();
         $ds->setDsn(array('scope' => 'autologin'));
         $auto->setDataStore($ds);
-        list($startNow, $isLogined, $userId) = $auto->autoLoginFilter();
-        $this->logined = $isLogined;
+
+        $startNow = $auto->autoLoginStart();
+        $this->logined = $auto->isLogined();
+        $this->loginMessage = $auto->getUserId() . ' is logined with memcache!';
+
+        if ($startNow){
+            // Initialize application session values
+        }
     }
 }

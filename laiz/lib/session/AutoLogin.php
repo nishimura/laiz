@@ -108,6 +108,9 @@ class AutoLogin implements Help
 
         // set user id to session.
         $this->session->add(self::USER_ID_KEY, $id);
+
+        // set user id to data store
+        $ds->set($loginKey, $id);
     }
 
     private function cleanupAutoLogin(DataStore $ds, $path){
@@ -129,14 +132,14 @@ class AutoLogin implements Help
         $this->session->add(self::SESSION_STARTED, true);
     }
 
-    private function isLogined(){
+    public function isLogined(){
         return $this->session->get(self::LOGINED_KEY);
     }
     private function setLogined(){
         $this->session->add(self::LOGINED_KEY, true);
     }
 
-    private function getUserId(){
+    public function getUserId(){
         return $this->session->get(self::USER_ID_KEY);
     }
 
@@ -152,12 +155,12 @@ class AutoLogin implements Help
      *
      * @param int $expire
      * @param string $path
-     * @return array(bool, bool, int, array) startNow, isLogined, userId, data
+     * @return bool start now?
      */
-    public function autoLoginFilter($expire = 604800, $path = '/'){
+    public function autoLoginStart($expire = 604800, $path = '/'){
         // Return when session is started.
         if ($this->isStartedSession())
-            return array(false, $this->isLogined(), $this->getUserId());
+            return false;
 
         if (!empty($_COOKIE[self::COOKIE_KEY])){
             $ds = $this->getDataStore();
@@ -176,7 +179,7 @@ class AutoLogin implements Help
         // start session
         $this->startSession();
 
-        return array(true, $this->isLogined(), $this->getUserId());
+        return true;
     }
 
     public function help()
