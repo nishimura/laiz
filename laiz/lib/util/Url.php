@@ -28,7 +28,11 @@ class Url
             $this->https = true;
         else
             $this->https = false;
-        $this->host = $_SERVER['HTTP_HOST'];
+
+        if (isset($_SERVER['HTTP_HOST']))
+            $this->host = $_SERVER['HTTP_HOST'];
+        else
+            $this->host = 'localhost.localdomain';
     }
 
     public function setHttps($flag)
