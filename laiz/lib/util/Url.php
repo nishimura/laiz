@@ -38,7 +38,7 @@ class Url
         if (isset($_SERVER['PATH_INFO']))
             $this->pathInfo = $_SERVER['PATH_INFO'];
         else
-            $this->pathInfo = '';
+            $this->pathInfo = '/';
     }
 
     public function setHttps($flag)
@@ -94,7 +94,7 @@ class Url
 
     public function setAction($action)
     {
-        $this->pathInfo = preg_replace('@^[^/]+@', $action, $this->pathInfo);
+        $this->pathInfo = preg_replace('@^/[^/]+@', '/' . $action, $this->pathInfo);
         return $this;
     }
 }
