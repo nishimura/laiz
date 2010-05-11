@@ -49,6 +49,11 @@ class DataStore_Memcache implements DataStore
 
     public function set($key, $value, $expire = null)
     {
+        if (is_bool($value) || is_numeric($value)){
+            // get method returns error with PHP 5.3.2 following message:
+            // PHP Notice:  MemcachePool::get(): Failed to uncompress data.
+            $value = (string)$value;
+        }
         return $this->memcache->set($this->prefix . $key, $value,
                                     MEMCACHE_COMPRESSED, $expire);
     }
