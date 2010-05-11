@@ -95,7 +95,7 @@ class Url
 
     public function setAction($action)
     {
-        $this->pathInfo = preg_replace('@^[^/]+', $action, $this->pathInfo);
+        $this->pathInfo = preg_replace('@^[^/]+@', $action, $this->pathInfo);
         return $this;
     }
 }
