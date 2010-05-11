@@ -50,7 +50,7 @@ class Base_Action_ActionTest implements ActionTest
      * @ActionTest request:ret=1
      * @ActionTest return:otherAction
      */
-    public function test4(Assert $a)
+    public function test4()
     {
     }
 
