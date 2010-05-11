@@ -63,7 +63,7 @@ class DataStore_Memcache implements DataStore
         $ret = $this->memcache->delete($key);
         if (!$ret)
             // see http://php.net/memcache-delete#94536
-            $ret = $this->memcache->set($key, null, time() - 3600);
+            $ret = $this->memcache->set($key, null, null, time() - 3600);
         return $ret;
     }
 
