@@ -42,7 +42,7 @@ class Hash
     {
         $saltLen = 16;
         for ($salt = '', $i = 0; $i < $saltLen; $i++)
-            $salt .= chr(mt_rand(42, 126));
+            $salt .= chr(mt_rand(66, 122));
         $salt .= '$';
         if ($addPrefix)
             $salt = '$5$' . $salt;
