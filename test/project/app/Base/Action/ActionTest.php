@@ -8,12 +8,16 @@ class Base_Action_ActionTest implements ActionTest
     public $prop1;
     public $prop2;
     public $prop3;
+    public $ret;
     public function act()
     {
         $this->prop1 = 3;
         $a = new StdClass();
         $a->bar = 'baz';
         $this->prop3 = $a;
+
+        if ($this->ret)
+            return 'otherAction';
     }
 
     public function testPrep(Assert $a)
@@ -40,6 +44,14 @@ class Base_Action_ActionTest implements ActionTest
     {
         $a->equal($this->prop1, 3); // override in act method
         $a->equal($this->prop2, 'request string');
+    }
+
+    /**
+     * @ActionTest request:ret=1
+     * @ActionTest return:otherAction
+     */
+    public function test4(Assert $a)
+    {
     }
 
     public function getActionName()

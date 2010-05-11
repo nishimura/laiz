@@ -90,7 +90,7 @@ class Action_Test_Action
                 $ref = new ReflectionObject($action);
                 $refMethod = $ref->getMethod($method);
                 $comment = $refMethod->getDocComment();
-                if ($comment && preg_match_all("/ActionTest +request:(.+)/", $comment, $matches)){
+                if ($comment && preg_match_all("/@ActionTest +request:(.+)/", $comment, $matches)){
                     foreach ($matches[1] as $line){
                         $requests = explode('=', $line, 2);
                         if (count($requests) !== 2)
@@ -101,9 +101,12 @@ class Action_Test_Action
                     }
                 }
 
-                Component_Runner::exec($action, $opts['methodName']);
+                $ret = Component_Runner::exec($action, $opts['methodName']);
 
                 $action->$method($assert);
+                if ($comment && preg_match("/@ActionTest +return:(.+)/", $comment, $matches)){
+                    $assert->equal($ret, $matches[1]);
+                }
             }
         }
 
