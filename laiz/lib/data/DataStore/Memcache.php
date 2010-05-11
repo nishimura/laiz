@@ -60,7 +60,7 @@ class DataStore_Memcache implements DataStore
 
     public function get($key)
     {
-        return $this->memcache->get($this->prefix . $key);
+        return $this->memcache->get($this->prefix . $key, MEMCACHE_COMPRESSED);
     }
 
     public function clear()
