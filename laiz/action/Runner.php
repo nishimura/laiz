@@ -129,6 +129,7 @@ class Runner
                 if (preg_match('/^redirect:/', $ret)){
                     $redirect = str_replace('redirect:', '', $ret);
                     header("Location: $redirect");
+                    return;
                 }else if (preg_match('/^action:/', $ret)){
                     return $this->clean()->run(str_replace('action:', '', $ret));
                 }else if (isset($configs['result'][$ret])){
