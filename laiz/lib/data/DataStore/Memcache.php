@@ -60,7 +60,11 @@ class DataStore_Memcache implements DataStore
 
     public function delete($key)
     {
-        return $this->memcache->delete($key);
+        $ret = $this->memcache->delete($key);
+        if (!$ret)
+            // see http://php.net/memcache-delete#94536
+            $ret = $this->memcache->set($key, null, time() - 3600);
+        return $ret;
     }
 
     public function get($key)
