@@ -92,4 +92,10 @@ class Url
     {
         return $this->getPrefix() . $this->pathInfo;
     }
+
+    public function setAction($action)
+    {
+        $this->pathInfo = preg_replace('@^[^/]+', $action, $this->pathInfo);
+        return $this;
+    }
 }
