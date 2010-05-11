@@ -19,5 +19,6 @@ else
 if (!preg_match('@/$@', $base))
     $base .= '/';
 
+error_reporting(E_ALL|E_STRICT);
 require_once dirname(dirname(dirname(__FILE__))) . '/Laiz.php';
 Laiz::laze($base);
