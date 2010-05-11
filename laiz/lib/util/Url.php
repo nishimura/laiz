@@ -21,6 +21,8 @@ class Url
 {
     private $https;
     private $host;
+    private $pathInfo;
+    private $addPathInfo = false;
 
     public function __construct()
     {
@@ -33,6 +35,11 @@ class Url
             $this->host = $_SERVER['HTTP_HOST'];
         else
             $this->host = 'localhost.localdomain';
+
+        if (isset($_SERVER['PATH_INFO']))
+            $this->pathInfo = $_SERVER['PATH_INFO'];
+        else
+            $this->pathInfo = '';
     }
 
     public function setHttps($flag)
@@ -65,14 +72,24 @@ class Url
         return $this;
     }
 
-    public function getRoot()
+    public function getPrefix()
     {
         $ret = '';
         if ($this->https)
             $ret .= 'https://';
         else
             $ret .= 'http://';
-        $ret .= $this->host . '/';
+        $ret .= $this->host;
         return $ret;
+    }
+
+    public function getRoot()
+    {
+        return $this->getPrefix() . '/';
+    }
+
+    public function getPath()
+    {
+        return $this->getPrefix() . $this->pathInfo;
     }
 }
