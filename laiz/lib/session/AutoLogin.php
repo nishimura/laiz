@@ -91,7 +91,7 @@ class AutoLogin implements Help
         else
             $this->cleanupAutoLogin($ds, $path);
 
-        $this->setLogined();
+        $this->setLogined($id);
         return true;
     }
 
@@ -105,9 +105,6 @@ class AutoLogin implements Help
 
         // send auto login cookie.
         setcookie(self::COOKIE_KEY, $loginKey, time() + $expire, $path);
-
-        // set user id to session.
-        $this->session->add(self::USER_ID_KEY, $id);
 
         // set user id to data store
         $ds->set($loginKey, $id);
@@ -135,7 +132,9 @@ class AutoLogin implements Help
     public function isLogined(){
         return $this->session->get(self::LOGINED_KEY);
     }
-    private function setLogined(){
+    private function setLogined($id){
+        // set user id to session.
+        $this->session->add(self::USER_ID_KEY, $id);
         $this->session->add(self::LOGINED_KEY, true);
     }
 
@@ -167,7 +166,7 @@ class AutoLogin implements Help
             $value = $ds->get($_COOKIE[self::COOKIE_KEY]);
 
             // set login flag
-            $this->setLogined();
+            $this->setLogined($value);
 
             // delete old cookie.
             $this->cleanupAutoLogin($ds, $path);
