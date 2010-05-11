@@ -22,7 +22,6 @@ class Url
     private $https;
     private $host;
     private $pathInfo;
-    private $addPathInfo = false;
 
     public function __construct()
     {
