@@ -101,7 +101,12 @@ class Action_Test_Action
                     }
                 }
 
-                $ret = Component_Runner::exec($action, $opts['methodName']);
+                if ($comment && preg_match('/@ActionTest +selfact/', $comment, $matches)){
+                    $ret = $action->$method($assert);
+                }else{
+                    $ret = Component_Runner::exec($action, $opts['methodName']);
+                    $action->$method($assert);
+                }
 
                 $action->$method($assert);
                 if ($comment && preg_match("/@ActionTest +return:(.+)/", $comment, $matches)){
