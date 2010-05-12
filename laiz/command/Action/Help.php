@@ -32,7 +32,8 @@ class Action_Help implements Describable
                 $action = $help;
                 break;
             }else{
-                $ret .= '  laiz help ' . $name . "\n";
+                if ($action->help()) // add to list if exists value
+                    $ret .= '  laiz help ' . $name . "\n";
             }
         }
 
