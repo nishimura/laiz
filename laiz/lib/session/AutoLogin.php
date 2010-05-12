@@ -146,6 +146,7 @@ class AutoLogin implements Help
         $ds = $this->getDataStore();
 
         $this->session->add(self::LOGINED_KEY, false);
+        $this->session->add(self::USER_ID_KEY, null);
 
         $this->cleanupAutoLogin($ds, $path);
     }
