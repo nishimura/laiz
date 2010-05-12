@@ -82,6 +82,11 @@ class Url
         return $ret;
     }
 
+    public function getHost()
+    {
+        return $this->host;
+    }
+
     public function getRoot()
     {
         return $this->getPrefix() . '/';
