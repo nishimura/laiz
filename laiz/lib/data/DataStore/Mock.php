@@ -40,6 +40,9 @@ class DataStore_Mock implements DataStore
      */
     public function set($key, $vlaue, $expire = null)
     {
+        if (!isset($this->data[$this->scope]))
+            $this->data[$this->scope] = array();
+
         $this->data[$this->scope][$key] = $value;
         return true;
     }
