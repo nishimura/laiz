@@ -108,7 +108,6 @@ class Action_Test_Action
                     $action->$method($assert);
                 }
 
-                $action->$method($assert);
                 if ($comment && preg_match("/@ActionTest +return:(.+)/", $comment, $matches)){
                     $assert->equal($ret, $matches[1]);
                 }
