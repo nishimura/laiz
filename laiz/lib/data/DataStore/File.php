@@ -34,7 +34,7 @@ class DataStore_File implements DataStore
 
     }
 
-    public function set($key, $vlaue, $expire = null)
+    public function set($key, $value, $expire = null)
     {
 
     }
