@@ -87,15 +87,19 @@ class Assert
             break;
         }
 
-        if ($this->mode & self::VIEW_VERBOSE)
+        $class = str_replace('\\', '.', $hit['class']);
+        if ($this->mode & self::VIEW_VERBOSE){
             $file = $pre['file'];
-        else
+            $function = $class . '#' . $hit['function'];
+        }else{
             $file = basename($pre['file']);
+            $function = $hit['function'];
+        }
 
         $ret = array('file' => $file,
                      'line' => $pre['line'],
-                     'function' => $hit['function'],
-                     'class' => str_replace('\\', '.', $hit['class']),
+                     'function' => $function,
+                     'class' => $class,
                      'assert' => str_replace('\\', '.', $pre['function']));
         return $ret;
     }
@@ -105,11 +109,10 @@ class Assert
         $this->failureCount++;
         $line = $this->getLine();
         $msg = $this->decorate('Failure! ', 'red')
+            . $line['function']
             . ' in ' . $line['file']
-            . ' line ' . $line['line']
-            . ', ' . $line['class']
-            . '#' . $line['function']
-            . $line['assert'] . ', (' . escapeshellcmd($msg) . ') '
+            . ' line ' . $line['line'] . ', '
+            . $line['assert'] . ' (' . escapeshellcmd($msg) . ') '
             ;
 
         if ($this->mode & self::VIEW_FAILURE)
@@ -124,6 +127,7 @@ class Assert
         if ($this->mode & self::VIEW_SUCCESS){
             $line = $this->getLine();
             $msg = $this->decorate('Success! ', 'green')
+                . $line['function']
                 . ' in ' . $line['file']
                 . ' line ' . $line['line']
                 . ', (' . escapeshellcmd($msg) . ')'
