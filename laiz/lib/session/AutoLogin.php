@@ -72,6 +72,11 @@ class AutoLogin implements Help
         return $ds;
     }
 
+    public function setDomain($domain)
+    {
+        $this->session->setDomain($domain);
+    }
+
     /**
      * login process
      *
