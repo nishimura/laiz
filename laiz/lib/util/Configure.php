@@ -9,7 +9,7 @@
  * @copyright 2010 Satoshi Nishimura
  */
 
-namespace laiz\lib\util\Configure;
+namespace laiz\lib\util;
 
 use laiz\core\Configure as Core;
 
