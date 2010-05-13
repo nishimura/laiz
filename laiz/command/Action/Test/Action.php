@@ -121,7 +121,7 @@ class Action_Test_Action
                 }
 
                 if ($comment && preg_match("/@ActionTest +return:(.+)/", $comment, $matches)){
-                    $assert->equal($ret, $matches[1]);
+                    $this->testReturnValue($assert, $ret, $matches[1]);
                 }
             }
         }
@@ -129,6 +129,11 @@ class Action_Test_Action
         $assert->showResult();
 
         $commandConfigurable->setUse();
+    }
+
+    private function testReturnValue(Assert $assert, $ret, $equal)
+    {
+        $assert->equal($ret, $equal);
     }
 
     public function help()
