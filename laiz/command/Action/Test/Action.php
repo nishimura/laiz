@@ -16,7 +16,6 @@ use \laiz\lib\test\Assert;
 use \laiz\action\Runner;
 use \laiz\action\Component_Runner;
 use \laiz\builder\Container;
-use \laiz\builder\Object as Builder;
 
 use \ReflectionObject;
 
@@ -102,10 +101,23 @@ class Action_Test_Action
                 }
 
                 if ($comment && preg_match('/@ActionTest +selfact/', $comment, $matches)){
+                    // need call act method yourself
                     $ret = $action->$method($assert);
                 }else{
-                    $ret = Component_Runner::exec($action, $opts['methodName']);
-                    $action->$method($assert);
+                    if ($comment && preg_match('/@ActionTest +arguments:(.+)/', $comment, $matches)){
+                        // call act method with mock arguments
+                        $args = array();
+                        foreach (explode(',', $matches[1]) as $arg){
+                            $args[] = $container->create(trim($arg));
+                        }
+                        $ret = call_user_func_array(array($action, $opts['methodName']), $args);
+                        array_unshift($args, $assert);
+                        call_user_func_array(array($action, $method), $args);
+
+                    }else{
+                        $ret = Component_Runner::exec($action, $opts['methodName']);
+                        $action->$method($assert);
+                    }
                 }
 
                 if ($comment && preg_match("/@ActionTest +return:(.+)/", $comment, $matches)){
