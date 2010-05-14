@@ -23,7 +23,7 @@ use \laiz\lib\util\Configure;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class DataStore_File1 implements DataStore
+class DataStore_File implements DataStore
 {
     private $scope = 'laiz_datastore_file';
 
