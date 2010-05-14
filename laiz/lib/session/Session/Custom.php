@@ -123,7 +123,7 @@ class Session_Custom implements Session
     public function end()
     {
         $ds = $this->getDataStore();
-        $ds->clear();
+        $ds->delete($this->sid);
         $this->data = array();
         $this->isStarted = false;
     }
