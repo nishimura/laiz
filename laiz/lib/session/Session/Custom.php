@@ -122,9 +122,14 @@ class Session_Custom implements Session
 
     public function end()
     {
-        $ds = $this->getDataStore();
-        $ds->delete($this->sid);
-        $this->deleteCookie();
+        if (!$this->sid && !isset($_COOKIE[$this->name]))
+            return; // session data not found
+        else if ($this->sid)
+            $sid = $this->sid;
+        else
+            $sid = $_COOKIE[$this->name];
+
+        $this->delete($sid);
         $this->data = array();
         $this->isStarted = false;
     }
@@ -139,15 +144,17 @@ class Session_Custom implements Session
         return $this->name;
     }
 
-    private function deleteCookie()
+    private function delete($sid)
     {
-        setcookie($this->name, $this->sid, time() - 3600, $this->path, $this->domain);
+        $ds = $this->getDataStore();
+        $ds->delete($sid);
+        setcookie($this->name, $sid, time() - 3600, $this->path, $this->domain);
     }
 
     public function changeSessionId()
     {
         $this->start();
-        $this->deleteCookie();
+        $this->delete($this->sid);
         $this->generateSid();
     }
 
