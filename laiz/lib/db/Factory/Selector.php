@@ -24,11 +24,6 @@ class Factory_Selector implements Factory, Help
 {
     protected $config;
 
-    public function __construct()
-    {
-        $this->config = Configure::get(__NAMESPACE__);
-    }
-
     /**
      * Return factory by name
      *
@@ -37,6 +32,9 @@ class Factory_Selector implements Factory, Help
      */
     public function select($name)
     {
+        if (!$this->config)
+            $this->config = Configure::get(__NAMESPACE__);
+
         switch (true){
         case ($name === 'transaction'):
         case ($name === 'trans'):
