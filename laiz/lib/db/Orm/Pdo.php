@@ -46,10 +46,10 @@ class Orm_Pdo implements Orm
     private $tables = array();
 
     /** @var string current $tables setting file path. Easy cache. */
-    static private $currentConfigFile;
+    private $currentConfigFile;
 
     /** @var string current $tables setting. Easy cache. */
-    static private $currentTables;
+    private $currentTables;
 
     /** @var string */
     private $tableName;
@@ -58,7 +58,7 @@ class Orm_Pdo implements Orm
     private $autoCreateConfig;
 
     /** @var string Hash of check to update database. */
-    static protected $dbHash;
+    protected $dbHash;
 
 
     /**
@@ -118,8 +118,8 @@ class Orm_Pdo implements Orm
      * @access private
      */
     private function getDbHash(){
-        if (self::$dbHash)
-            return self::$dbHash;
+        if ($this->dbHash)
+            return $this->dbHash;
         
         $data = array();
         
@@ -133,8 +133,8 @@ class Orm_Pdo implements Orm
             $data[$table]['pKey']    = $this->dao->getMetaPrimaryKeys($table);
         }
         $data[] = $tables;
-        self::$dbHash = md5(serialize($data));
-        return self::$dbHash;
+        $this->dbHash = md5(serialize($data));
+        return $this->dbHash;
     }
 
     /**
@@ -187,9 +187,9 @@ class Orm_Pdo implements Orm
      * @access public
      */
     public function setTableConfigs($configFile, $notUseCache = false){
-        if ($notUseCache && self::$currentConfigFile == $configFile){
+        if ($notUseCache && $this->currentConfigFile == $configFile){
             // 同じデータベースを使う場合はstaticを利用したキャッシュ
-            $this->tables = self::$currentTables;
+            $this->tables = $this->currentTables;
             return true;
         }
 
@@ -238,8 +238,8 @@ class Orm_Pdo implements Orm
         }
 
 
-        self::$currentConfigFile = $configFile;
-        self::$currentTables     = $this->tables;
+        $this->currentConfigFile = $configFile;
+        $this->currentTables     = $this->tables;
 
         return true;
     }
