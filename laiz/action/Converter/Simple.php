@@ -28,4 +28,14 @@ class Converter_Simple implements Converter
     {
         return str_replace('-', '', $arg);
     }
+
+    public function arrayToObject($arr, $className)
+    {
+        $obj = new $className();
+        foreach (get_object_vars($obj) as $name => $value){
+            if (isset($arr[$name]))
+                $obj->$name = $arr[$name];
+        }
+        return $obj;
+    }
 }

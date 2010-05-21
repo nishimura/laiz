@@ -12,12 +12,18 @@
 
     <article>
       <p>request[{arg1}] [{arg2}] [{arg3}]</p>
+      <p>[{arr.prop1}] [{arr.prop2}] [{arr.prop3}]</p>
       <form action="">
         trim: <input type="text" name="arg1">
         <br>
         removeHyphen: <input type="text" name="arg2">
         <br>
         trim|removeHyphen: <input type="text" name="arg3">
+        <br>
+        arrayToObject:
+        <input type="text" name="arr[prop1]" value="{arr.prop1}">
+        <input type="text" name="arr[prop2]" value="{arr.prop2}">
+        <input type="text" name="arr[prop3]" value="{arr.prop3}">
         <br>
         <input type="submit">
       </form>

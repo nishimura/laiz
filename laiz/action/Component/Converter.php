@@ -53,18 +53,24 @@ class Component_Converter implements Component, Help
             return;
         $this->converted[] = $key . $value;
 
-        foreach (explode('|', $value) as $funcName){
-            $funcName = trim($funcName);
-            if (strlen($funcName) === 0)
+        foreach (explode('|', $value) as $item){
+            $item = trim($item);
+            if (strlen($item) === 0)
                 continue;
+            $args = explode(',', $item);
+            $funcName = trim(array_shift($args));
 
             $hit = false;
             foreach ($this->converters as $converter){
-                if (method_exists($converter, $funcName)){
-                    $var = $this->request->get($key);
-                    $this->request->add($key, $converter->$funcName($var));
-                    $hit = true;
-                }
+                if (!method_exists($converter, $funcName))
+                    continue;
+
+                $var = $this->request->get($key);
+                array_unshift($args, $var);
+                $converted =
+                    call_user_func_array(array($converter, $funcName), $args);
+                $this->request->add($key, $converted);
+                $hit = true;
             }
             if (!$hit)
                 trigger_error("Not found $funcName converter.", E_USER_WARNING);

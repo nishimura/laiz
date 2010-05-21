@@ -9,6 +9,7 @@ Ini File
     [converter]
     arg1 = trim                    ; framework converter
     arg2 = trim|removeHyphen       ; multiple
+    arr  = arrayToObject,MyClass
 
 
 Custom Converter
@@ -22,9 +23,18 @@ Custom Converter
         {
             return rtrim($arg);
         }
+        public function arrayToMyClass($arr, $className)
+        {
+            $obj = new $className();
+            foreach (...)
+                ...
+            return $obj;
+        }
     }
 
 
     ;; ini file
     [converter]
     arg1 = myRtrim
+    arr  = arrayToMyClass,MyClass
+
