@@ -65,6 +65,7 @@ class Component_Converter implements Component, Help
                 if (!method_exists($converter, $funcName))
                     continue;
 
+                $args = array_map('trim', $args);
                 $var = $this->request->get($key);
                 array_unshift($args, $var);
                 $converted =
