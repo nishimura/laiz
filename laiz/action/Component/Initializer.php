@@ -19,7 +19,7 @@ use \laiz\lib\aggregate\laiz\action\Results;
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
- * @priority  1
+ * @priority  20
  */
 class Component_Initializer implements Component
 {

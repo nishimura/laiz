@@ -18,9 +18,9 @@ use \laiz\builder\Singleton;
  * Interface of action class configure.
  *
  * priority:
- *   Initializer   :   1
  *   Converter     :  10
- *   Validator     :  20
+ *   Initializer   :  20
+ *   Validator     :  30
  *   Filter        :  80
  *   Action        : 200
  *   ViewConfigure : 300
