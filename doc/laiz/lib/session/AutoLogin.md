@@ -40,8 +40,9 @@ Filter
     {
         public function filter(AutoLogin $auto)
         {
-            list($startNow, $isLogined, $id) = $auto->autoLoginFilter();
+            $startNow = $auto->autoLoginStart();
             if ($startNow){
+                $userId = $auto->getUserId();
                 // initialization
             }
         }
