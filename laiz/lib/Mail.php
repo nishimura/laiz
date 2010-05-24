@@ -42,7 +42,7 @@ class Mail
      * デフォルトのヘッダを設定する
      */
     public function __construct(Flexy $view){
-        $this->view = clone $view;
+        $this->view = $view;
     }
 
     /**
@@ -55,6 +55,11 @@ class Mail
         $this->view->setTemplateDir($dir);
     }
 
+    public function setHeader($type, $value)
+    {
+        $this->headers[$type] = "$type: $value";
+    }
+
     /**
      * Validatorを使ったメールアドレスチェックとヘッダの設定
      *
@@ -63,7 +68,7 @@ class Mail
      * @param string $title メールアドレスの表示名
      * @return bool
      */
-    private function setHeader($type, $mail, $title = null){
+    public function setMailHeader($type, $mail, $title = null){
         if (!Validator::isMail($mail))
             return false;
 
@@ -79,7 +84,7 @@ class Mail
      *
      * @param string $param
      */
-    private function setParam($param){
+    public function setParam($param){
         $this->params[$param] = $param; // 同じパラメータは上書きする
     }
 
@@ -101,7 +106,7 @@ class Mail
      */
     public function setFrom($mail, $title = null){
         $this->setEnvelopeFrom($mail);
-        return $this->setHeader('From', $mail, $title);
+        return $this->setMailHeader('From', $mail, $title);
     }
 
     /**
@@ -111,7 +116,7 @@ class Mail
      * @return bool
      */
     public function setReplyTo($mail, $title = null){
-        return $this->setHeader('Reply-To', $mail, $title);
+        return $this->setMailHeader('Reply-To', $mail, $title);
     }
 
     /**
