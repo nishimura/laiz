@@ -44,6 +44,10 @@ class Iterator_Mock implements Iterator, IteratorAggregate
     {
     }
 
+    public function setOptions($options)
+    {
+    }
+
     public function setReplacements($reps)
     {
     }
