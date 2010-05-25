@@ -143,7 +143,7 @@ class Mail
     public function send($to, $subject, $message){
         // To ヘッダの設定
         if (is_array($to) && isset($to[0], $to[1]))
-            $to = mb_encode_mimeheader($to[1], self::CHARSET) . '<' . $to[0] . '>';
+            $to = mb_encode_mimeheader($to[1], self::CHARSET) . ' <' . $to[0] . '>';
 
         // エンコーディング設定
         if (!isset($this->headers['Content-Type']))
@@ -157,7 +157,7 @@ class Mail
 
 
         // メールの送信
-        $ret = mb_send_mail($to, $subject, $message, $headers, $params);
+        $ret = $this->runSend($to, $subject, $message, $headers, $params);
         if (!$ret)
             return $ret;
 
@@ -171,6 +171,11 @@ class Mail
             $to = $this->toCopy;
         }
 
+        return $this->runSend($to, $subject, $message, $headers, $params);
+    }
+
+    protected function runSend($to, $subject, $message, $headers, $params)
+    {
         return mb_send_mail($to, $subject, $message, $headers, $params);
     }
 
