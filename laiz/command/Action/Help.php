@@ -75,7 +75,7 @@ class Action_Help implements Describable
             else
                 $base = 'app';
 
-            if (($cmd = str_replace('laiz.command.Action_', '', $fullName))
+            if (($cmd = preg_replace('/.*command[._]Action_/i', '', $fullName))
                 !== $fullName){
                 // special short name
                 // laiz help cmd => laiz\command\Action_Cmd
