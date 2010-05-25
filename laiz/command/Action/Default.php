@@ -41,7 +41,7 @@ class Action_Default
         echo "COMMANDS\n";
         foreach ($describables as $describe){
             $className = get_class($describe);
-            $className = str_replace('laiz\\command\\Action_', '', $className);
+            $className = preg_replace('/^.*Action_/', '', $className);
             $className = sprintf("%-12s", $className);
             $className{0} = strtolower($className{0});
             echo '  laiz ' . $className . ": " . $describe->describe();
