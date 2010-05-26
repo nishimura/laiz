@@ -33,7 +33,7 @@ class Url
         if (isset($_SERVER['HTTP_HOST']))
             $this->host = $_SERVER['HTTP_HOST'];
         else
-            $this->host = 'localhost.localdomain';
+            $this->host = gethostname();
 
         if (isset($_SERVER['PATH_INFO']))
             $this->pathInfo = $_SERVER['PATH_INFO'];
