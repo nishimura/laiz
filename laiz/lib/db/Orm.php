@@ -28,4 +28,5 @@ interface Orm
     public function begin();
     public function commit();
     public function abort();
+    public function query($query, $prepare = null);
 }

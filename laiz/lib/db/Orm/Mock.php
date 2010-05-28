@@ -120,9 +120,13 @@ class Orm_Mock implements Orm
     public function begin(){}
     public function commit(){}
 
-    /** unimplementation abort method. */
+    /** unimplementation methods. */
     public function abort()
     {
         trigger_error('Called abort method!');
+    }
+    public function query($query, $prepare = null)
+    {
+        return true;
     }
 }
