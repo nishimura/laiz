@@ -38,4 +38,36 @@ class Converter_Simple implements Converter
         }
         return $obj;
     }
+
+    public function half($arg)
+    {
+        $arg = $this->halfAlnum($arg);
+        $arg = $this->halfSpace($arg);
+        $arg = $this->halfHyphen($arg);
+        return $arg;
+    }
+
+    public function halfAlnum($arg)
+    {
+        return mb_convert_kana($arg, 'a');
+    }
+
+    public function halfSpace($arg)
+    {
+        return mb_convert_kana($arg, 's');
+    }
+
+    public function halfHyphen($arg)
+    {
+        $arg = preg_replace("/([0-9])ー([0-9])/", "\$1-\$2", $arg);
+        $arg = preg_replace("/([0-9])−([0-9])/", "\$1-\$2", $arg);
+        $arg = preg_replace("/([0-9])‐([0-9])/", "\$1-\$2", $arg);
+        $arg = preg_replace("/([0-9])\xa1\xbd([0-9])/", "\$1-\$2", $arg); // ダッシュ
+        return $arg;
+    }
+
+    public function hexdec($arg)
+    {
+        return hexdec($arg);
+    }
 }
