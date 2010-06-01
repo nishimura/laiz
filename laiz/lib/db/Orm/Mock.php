@@ -46,8 +46,9 @@ class Orm_Mock implements Orm
         if (count($this->vos) == 0)
             return null;
 
-        if (is_numeric($where) && isset($this->vos[$where])){
-            $vo = $this->vos[$where];
+        if (is_numeric($where)){
+            if (isset($this->vos[$where]))
+                $vo = $this->vos[$where];
         }else if (is_array($where)){
             foreach ($this->vos as $a){
                 $match = true;
