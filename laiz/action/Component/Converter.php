@@ -11,7 +11,6 @@
 
 namespace laiz\action;
 
-use \laiz\parser\Ini_Simple;
 use \laiz\action\Request;
 use \laiz\command\Help;
 use \laiz\lib\aggregate\laiz\action\Converters;
@@ -25,19 +24,14 @@ use \laiz\lib\aggregate\laiz\action\Converters;
  */
 class Component_Converter implements Component, Help
 {
-    /** @var Laiz_Parser */
-    private $parser;
-
     /** @var ArrayObject */
     private $converters;
 
     /** @var array */
     private $converted = array();
 
-    public function __construct(Ini_Simple $parser, Converters $converters
-                                , Request $req)
+    public function __construct(Converters $converters, Request $req)
     {
-        $this->parser = $parser;
         $this->converters = $converters;
         $this->request = $req;
     }
