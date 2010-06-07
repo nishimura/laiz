@@ -47,6 +47,7 @@ class Component_Validator implements Component, Help
         $this->result  = $res;
     }
 
+    // ==TODO== refactoring
     public function run(Array $config)
     {
         if (!isset($config['file'], $config['errorAction'])){
