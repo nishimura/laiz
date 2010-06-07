@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Laiz Test Page</title>
+    <flexy:include src="include/htmlhead.html" />
+  </head>
+  <body>
+    <header>
+      <h1>Laiz Test Page</h1>
+    </header>
+
+    <article>
+      <p style="color: red;">{error}</p>
+      <p>request[{arg1}] [{arg2}] [{arg3}] [{arg4}] [{arg5}] [{arg6}]</p>
+      <p>[{arr.prop1}] [{arr.prop2}] [{arr.prop3}]</p>
+      <form action="RunValidator">
+        arg1 [required and digit with stop flag]: <input type="text" name="arg1">
+        <span style="color: red;">{errorArg1}</span>
+        <br>
+        arg2 [between 1 and 3]: <input type="text" name="arg2">
+        <span style="color: red;">{errorArg2}</span>
+        <br>
+        arg3 [any required]: <input type="text" name="arg3">
+        <span style="color: red;">{errorArg3}</span>
+        <br>
+        arg4 [equal arg 5]: <input type="text" name="arg4">
+        <span style="color: red;">{errorArg4}</span>
+        <br>
+        arg5 [mail address]: <input type="text" name="arg5">
+        <span style="color: red;">{errorArg5}</span>
+        <br>
+        arg6 [mail with dns check]: <input type="text" name="arg6">
+        <span style="color: red;">{errorArg6}</span>
+        <br>
+        arrayToObject: [phone]
+        <br>
+        <input type="text" name="arr[prop1]" value="{arr.prop1}"> -
+        <input type="text" name="arr[prop2]" value="{arr.prop2}"> -
+        <input type="text" name="arr[prop3]" value="{arr.prop3}">
+        <span style="color: red;">{errorArrProp1}</span>
+        <br>
+        <input type="submit">
+      </form>
+      <p><a href="/">back...</a></p>
+    </article>
+
+    <footer>
+      <p>copyright (c) 2010 Satoshi Nishimura</p>
+      <address>nishim314@gmail.com</address>
+    </footer>
+  </body>
+</html>

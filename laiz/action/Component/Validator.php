@@ -11,7 +11,9 @@
 
 namespace laiz\action;
 
-use laiz\builder\Container;
+use \laiz\lib\aggregate\laiz\action\Validators;
+use \laiz\parser\Ini;
+use \laiz\command\Help;
 
 /**
  * Class of parsing validator section in setting file.
@@ -20,25 +22,152 @@ use laiz\builder\Container;
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  * @priority  20
  */
-class Component_Validator implements Component
+class Component_Validator implements Component, Help
 {
-    /** @var Laiz_Container */
-    private $container;
+    const ERROR_KEY_PREFIX = 'error';
 
-    /** @var array Validator config */
-    private $config = array();
+    /** @var ArrayObject */
+    private $validators;
 
-    public function __construct(Container $container)
+    /** @var laiz\parser\Ini */
+    private $parser;
+
+    /** @var laiz\action\Request */
+    private $request;
+
+    /** @var laiz\action\Validator_Result */
+    private $result;
+
+    public function __construct(Validators $validators, Ini $parser
+                                , Request $req, Validator_Result $res)
     {
-        $this->container = $container;
+        $this->validators = $validators;
+        $this->parser  = $parser;
+        $this->request = $req;
+        $this->result  = $res;
     }
 
     public function run(Array $config)
     {
-        $filter = $this->container->create('Laiz_Validator_Filter');
-        $filter->setConfig($config);
+        if (!isset($config['file'], $config['errorAction'])){
+            trigger_error('file section and errorAction sections are required in ini config file.');
+            return;
+        }
 
-        $a = new Laiz_Action_Executable_Simple($filter, 'run');
-        $this->container->registerInterface($a, 10);
+        if (isset($config['errorKeyPrefix']))
+            $prefix = $config['errorKeyPrefix'];
+        else
+            $prefix = self::ERROR_KEY_PREFIX;
+
+        if (isset($config['stop']) && $config['stop'])
+            $defaultStop = true;
+        else
+            $defaultStop = false;
+
+        $valid = false;
+        $data = $this->parser->parse($config['file']);
+        foreach ($data as $argName => $lines){
+            if (isset($lines['stop']))
+                $stop = $lines['stop'];
+            else
+                $stop = $defaultStop;
+
+            foreach ($lines as $key => $value){
+                if ($key === 'stop')
+                    continue;
+
+                preg_match('/^([^\(]+)(\([^\)]+\))?/', $key, $matches);
+                if (!isset($matches[1])){
+                    trigger_error("Invalid key of validator: $key.");
+                    continue;
+                }
+                $method = $matches[1];
+                if (isset($matches[2]))
+                    $argsStr = $matches[2];
+                else
+                    $argsStr = null;
+                $hit = false;
+                foreach ($this->validators as $validator){
+                    // search validator method
+                    if (!method_exists($validator, $method))
+                        continue;
+
+                    $hit = true;
+                    $callback = array($validator, $method);
+                }
+                if (!$hit)
+                    trigger_error("Not found $method validator", E_USER_WARNING);
+                $args = (array)$this->getRequestValue($argName);
+                if ($argsStr){
+                    // arguments: ex. "(3, 4)"
+                    $a = trim($argsStr, '()');
+                    $a = explode(',', $a);
+                    foreach ($a as $v){
+                        $v = trim($v);
+                        if ($v[0] === '$')
+                            $v = $this->getRequestValue(ltrim($v, '$'));
+                        $args[] = $v;
+                    }
+                }
+
+                $ok = call_user_func_array(array($validator, $method), $args);
+                if (!$ok){
+                    $valid = true;
+                    if (strpos($argName, '.') === false){
+                        $errorKey = $prefix . ucfirst($argName);
+                    }else{
+                        $words = explode('.', $argName);
+                        $words = array_map('ucfirst', $words);
+                        $errorKey = $prefix . implode($words);
+                    }
+                    $this->result->$errorKey = $value;
+                    break;
+                }
+
+            }
+
+            if ($valid && $stop)
+                break;
+        }
+
+        if ($valid){
+            if (isset($config['errorMessage'], $config['errorMessageKey']))
+                $this->result->{$config['errorMessageKey']} = $config['errorMessage'];
+            return 'action:' . $config['errorAction'];
+        }else{
+            return;
+        }
+    }
+
+    private function getRequestValue($key)
+    {
+        if (strpos($key, '.') === false)
+            return $this->request->get($key);
+        
+        preg_match('/^([^.]+)\.(.+)/', $key, $matches);
+        $arg = $this->request->get($matches[1]);
+        if (is_object($arg))
+            return $arg->{$matches[2]};
+        else if (is_array($arg))
+            return $arg[$matches[2]];
+        else
+            return null;
+    }
+
+    public function help()
+    {
+        $docFile = str_replace('\\', '/', __CLASS__);
+        $docFile = str_replace('_', '/', $docFile) . '.md';
+        $ret = file_get_contents('doc/' . $docFile, FILE_USE_INCLUDE_PATH);
+
+        $ret .= "\nConverter List\n-------------\n\n";
+        foreach ($this->validators as $validator){
+            $methods = get_class_methods($validator);
+            foreach ($methods as $method){
+                $ret .= '    ' . $method
+                    . " 	in " . get_class($validator) . "\n";
+            }
+        }
+        return $ret;
     }
 }

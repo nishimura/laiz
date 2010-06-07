@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2007-2009 Satoshi Nishimura
  */
 
-namespace laiz\validator;
+namespace laiz\action;
 
 /**
  * Validation Class
@@ -18,7 +18,7 @@ namespace laiz\validator;
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  * @copyright Copyright (c) 2007-2009 Satoshi Nishimura
  */
-class Simple implements Validator
+class Validator_Simple implements Validator
 {
     /**
      * @param string $mail
@@ -26,7 +26,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isMail($mail, $isDnsCheck = false){
+    public function mail($mail, $isDnsCheck = false){
         if (!preg_match('/^[a-zA-Z0-9_]?[a-zA-Z0-9._+-]+@[a-zA-Z0-9-.]+\.[a-zA-Z]{2,4}$/', $mail)) {
             return false;
         }
@@ -47,13 +47,18 @@ class Simple implements Validator
         return true;
     }
 
+    public function digit($arg)
+    {
+        return ctype_digit($arg);
+    }
+
     /**
      * @param string $str
      * @param int $min
      * @return bool
      * @access public
      */
-    static public function isMinLength($str, $min){
+    public function minLength($str, $min){
         return (strlen($str) >= $min);
     }
 
@@ -63,7 +68,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isMaxLength($str, $max){
+    public function maxLength($str, $max){
         return (strlen($str) <= $max);
     }
 
@@ -72,7 +77,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isNumeric($str){
+    public function numeric($str){
         return is_numeric($str);
     }
 
@@ -82,7 +87,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isMinValue($num, $min){
+    public function minValue($num, $min){
         if (!is_numeric($num) || !is_numeric($min)) return false;
         return ($num >= $min);
     }
@@ -93,7 +98,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isMaxValue($num, $max){
+    public function maxValue($num, $max){
         if (!is_numeric($num) || !is_numeric($max)) return false;
         return ($num <= $max);
     }
@@ -105,7 +110,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isBetweenValue($num, $min, $max){
+    public function between($num, $min, $max){
         if (!is_numeric($num) || !is_numeric($min) || !is_numeric($max)) return false;
         return ($num >= $min && $num <= $max);
     }
@@ -115,8 +120,8 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isAlnum($str){
-        return (preg_match('/^[0-9a-zA-Z]+$/', $str) == 1);
+    public function alnum($str){
+        return ctype_alnum($str);
     }
 
     /**
@@ -124,8 +129,8 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isAlpha($str){
-        return (preg_match('/^[a-zA-Z]+$/', $str) == 1);
+    public function alpha($str){
+        return ctype_alpha($str);
     }
 
     /**
@@ -133,8 +138,8 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isLower($str){
-        return (preg_match('/^[a-z]+$/', $str) == 1);
+    public function lower($str){
+        return ctype_lower($str);
     }
 
     /**
@@ -142,8 +147,8 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isUpper($str){
-        return (preg_match('/^[A-Z]+$/', $str) == 1);
+    public function upper($str){
+        return ctype_upper($str);
     }
 
     /**
@@ -153,7 +158,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isRequired(){
+    public function required(){
         $args = func_get_args();
         foreach ($args as $arg){
             if (strlen($arg) !== 0)
@@ -170,7 +175,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isZip($str1, $str2 = null){
+    public function zip($str1, $str2 = null){
         if ($str2 !== null)
             $str1 = $str1 . '-' . $str2;
         
@@ -184,7 +189,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isPhone($str1, $str2 = null, $str3 = null){
+    public function phone($str1, $str2 = null, $str3 = null){
         if ($str2 != null && $str3 != null)
             $str1 = $str1 . '-' . $str2 . '-' . $str3;
 
@@ -198,7 +203,7 @@ class Simple implements Validator
      * @return bool
      * @access public
      */
-    static public function isEqual($str, $equal){
+    public function equal($str, $equal){
         return ($str === $equal);
     }
 }
