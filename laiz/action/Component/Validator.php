@@ -67,6 +67,12 @@ class Component_Validator implements Component, Help
 
         $valid = false;
         $data = $this->parser->parse($config['file']);
+        if (!$data){
+            trigger_error('ini file parsing failed: ' . $config['file'],
+                          E_USER_WARNING);
+            return 'action:' . $config['errorAction'];
+        }
+
         foreach ($data as $argName => $lines){
             if (isset($lines['stop']))
                 $stop = $lines['stop'];
