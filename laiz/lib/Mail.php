@@ -12,7 +12,7 @@
 namespace laiz\lib;
 
 use \laiz\view\Flexy;
-use \laiz\validator\Simple as Validator;
+use \laiz\action\Validator_Simple;
 
 /**
  * Mail Sender Class for Japanese
@@ -69,7 +69,8 @@ class Mail
      * @return bool
      */
     public function setMailHeader($type, $mail, $title = null){
-        if (!Validator::isMail($mail))
+        $validator = new Validator_Simple();
+        if (!$validator->mail($mail))
             return false;
 
         if ($title)
