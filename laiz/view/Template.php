@@ -178,8 +178,8 @@ abstract class Template implements View
      * @param string $template
      * @return string
      */
-    public function bufferedOutput(Response $res, $template){
-        return $this->main($res, $template)->getOutput();
+    public function bufferedOutput(Response $res){
+        return $this->main($res)->getOutput();
     }
 
     abstract protected function getOutput();
