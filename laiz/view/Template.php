@@ -104,7 +104,7 @@ abstract class Template implements View
      *
      * @param string $dir 
      */
-    public function setTemplateDir($dir)
+    protected function setTemplateDir($dir)
     {
         $frameworkBase = dirname(__FILE__) . '/';
         $config = Configure::get('base');
