@@ -13,6 +13,8 @@ namespace laiz\lib;
 
 use \laiz\view\Flexy;
 use \laiz\action\Validator_Simple;
+use \laiz\lib\action\Response;
+use \laiz\action\Result;
 
 /**
  * Mail Sender Class for Japanese
@@ -38,21 +40,13 @@ class Mail
     /** ヘッダのエンコーディング */
     const CHARSET = 'ISO-2022-JP';
 
-    /**
-     * デフォルトのヘッダを設定する
-     */
-    public function __construct(Flexy $view){
-        $this->view = $view;
-    }
+    /** @var laiz\lib\action\Response */
+    private $response;
 
-    /**
-     * メールテンプレートのディレクトリを設定する
-     *
-     * @param string $dir 
-     */
-    public function setTemplateDir($dir)
+    public function generateResponse()
     {
-        $this->view->setTemplateDir($dir);
+        $this->response = new Response();
+        return $this->response;
     }
 
     public function setHeader($type, $value)
@@ -141,7 +135,17 @@ class Mail
      * @param string $message
      * @return bool
      */
-    public function send($to, $subject, $message){
+    public function send($to, $subject, $message = null){
+        if ($message === null && $this->response instanceof Response){
+            $view = new Flexy();
+            $view->setTemplateExtension('.txt');
+            $view->setFlexyOptions(array('nonHTML' => true));
+            $message = $view->bufferedOutput($this->response);
+        }else if (!is_string($message)){
+            trigger_error('Invalid argument of message.', E_USER_WARNING);
+            return false;
+        }
+
         // To ヘッダの設定
         if (is_array($to) && isset($to[0], $to[1]))
             $to = mb_encode_mimeheader($to[1], self::CHARSET) . ' <' . $to[0] . '>';
@@ -178,21 +182,5 @@ class Mail
     protected function runSend($to, $subject, $message, $headers, $params)
     {
         return mb_send_mail($to, $subject, $message, $headers, $params);
-    }
-
-    /**
-     * テンプレートを指定してメールを送信する
-     *
-     * @param string $to
-     * @param string $subject
-     * @param string $template
-     * @return bool
-     */
-    public function sendByTemplate($to, $subject, $template){
-        $this->view->setTemplateExtension('.txt');
-        $this->view->setFlexyOptions(array('nonHTML' => true));
-        $body = $this->view->bufferedOutput($template);
-
-        return $this->send($to, $subject, $body);
     }
 }

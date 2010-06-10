@@ -1,0 +1,4 @@
+Message.
+
+prop1: {prop1}
+
