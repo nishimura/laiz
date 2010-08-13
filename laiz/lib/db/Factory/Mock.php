@@ -17,7 +17,7 @@ class Factory_Mock implements Factory
             isset($this->orms[Inflector::singularize($name)])){
             $orm = $this->orms[Inflector::singularize($name)];
             $vos = $orm->getVos();
-            var_dump($name);
+            //var_dump($name);
             $iterator = new Iterator_Mock($vos);
 
             $this->iterators[$name] = $iterator;
