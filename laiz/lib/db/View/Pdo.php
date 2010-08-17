@@ -74,7 +74,7 @@ class View_Pdo implements View
         $sqlFile = str_replace('/', '_', $sqlFile);
         $className = 'Vo_' . implode('', array_map('ucfirst', explode('_', $sqlFile)));
 
-        if (!class_exists($className, false))
+        if (!class_exists('laiz\\lib\\db\\' . $className, false))
             eval("namespace laiz\\lib\\db;\n class $className implements Vo{}");
 
         $className = 'laiz\lib\db\\' . $className;

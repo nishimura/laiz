@@ -51,4 +51,9 @@ class Iterator_Mock implements Iterator, IteratorAggregate
     public function setReplacements($reps)
     {
     }
+
+    public function count()
+    {
+        return count($this->iterator);
+    }
 }

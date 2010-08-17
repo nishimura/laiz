@@ -8,6 +8,11 @@ class Factory_Mock implements Factory
 {
     private $orms = array();
     private $iterators = array();
+    public function setIterator($name, $vos)
+    {
+        $this->iterators[$name] = new Iterator_Mock($vos);
+    }
+
     public function create($name)
     {
         if (isset($this->iterators[$name]))
