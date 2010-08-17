@@ -167,7 +167,7 @@ class Component_Validator implements Component, Help
         $docFile = str_replace('_', '/', $docFile) . '.md';
         $ret = file_get_contents('doc/' . $docFile, FILE_USE_INCLUDE_PATH);
 
-        $ret .= "\nConverter List\n-------------\n\n";
+        $ret .= "\nValidator List\n-------------\n\n";
         foreach ($this->validators as $validator){
             $methods = get_class_methods($validator);
             foreach ($methods as $method){
