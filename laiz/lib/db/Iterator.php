@@ -20,6 +20,5 @@ namespace laiz\lib\db;
 interface Iterator
 {
     public function setParams($params);
-    public function setReplacements($reps);
     public function count();
 }
