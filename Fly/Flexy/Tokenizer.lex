@@ -318,10 +318,6 @@ FLEXY_END           = ("%7D"|"%7d"|"}")
 FLEXY_LITERAL       = [^#]*
 FLEXY_MODIFIER      = ({NAME_START_CHARACTER}+)
 
-DW_TMPL             = ("TemplateBeginEditable"|"TemplateEndEditable")
-DW_TMPL_INSTANCE    = ("InstanceBeginEditable"|"InstanceEndEditable")
-DW_LIB              = ("#BeginLibraryItem"|"#EndLibraryItem")
-
 END_SCRIPT          = {ETAGO}(S|s)(C|c)(r|R)(I|i)(P|p)(T|t){TAGC}
 %%
 
@@ -406,31 +402,6 @@ END_SCRIPT          = {ETAGO}(S|s)(C|c)(r|R)(I|i)(P|p)(T|t){TAGC}
         return $this->returnSimple();
     }
     return $this->raiseError("empty markup tag not handled"); 
-}
-
-<YYINITIAL>{MDO}{COM}{WHITESPACE}{DW_TMPL} {
-    /* <!--  -- comment declaration */
-    if ($this->options['ignore_html']) {
-        return $this->returnSimple();
-    }
-    
-    if ($this->inStyle) {
-        return FLY_FLEXY_TOKEN_ERROR;
-    }
-    $this->tagName = trim(substr($this->yytext(),5));
-    $this->tokenName = 'DWTag';
-    $this->value = '';
-    $this->attributes = array();
-    $this->yybegin(IN_ATTR);
-    return FLY_FLEXY_TOKEN_NONE;
-}
-
-<YYINITIAL>{MDO}{COM}{WHITESPACE}{DW_TMPL_INSTANCE} {
-	
-}
-
-<YYINITIAL>{MDO}{COM}{WHITESPACE}{DW_LIB} {
-	
 }
 
 <YYINITIAL>{MDO}{COM}           {
