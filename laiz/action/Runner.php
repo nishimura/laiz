@@ -45,7 +45,7 @@ class Runner
     {
         $this->debugLoopCount++;
         if ($this->debugLoopCount > 100){
-            echo debug_backtrace();
+            trigger_error('Action redirection loop.', E_USER_ERROR);
             return;
         }
 
