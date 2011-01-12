@@ -68,6 +68,10 @@ class AutoLogin implements Help
             return null;
         }
 
+        // TODO: refactoring of GC.
+        if (substr((string)microtime(true), -3, 1) === '0')
+            $ds->clearExpiration();
+
         $this->dataSource = $ds;
         return $ds;
     }
@@ -108,11 +112,12 @@ class AutoLogin implements Help
         // register information of cookie to database.
         $loginKey = sha1(uniqid().mt_rand());
 
+        $limit = time() + $expire;
         // send auto login cookie.
-        setcookie(self::COOKIE_KEY, $loginKey, time() + $expire, $path);
+        setcookie(self::COOKIE_KEY, $loginKey, $limit, $path);
 
         // set user id to data store
-        $ds->set($loginKey, $id);
+        $ds->set($loginKey, $id, date('Y-m-d H:i:s', $limit));
     }
 
     private function cleanupAutoLogin(DataStore $ds, $path){
