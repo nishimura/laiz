@@ -117,7 +117,7 @@ class Component_Validator implements Component, Help
                     }
                 }
 
-                $ok = call_user_func_array(array($validator, $method), $args);
+                $ok = call_user_func_array($callback, $args);
                 if (!$ok){
                     $valid = true;
                     if (strpos($argName, '.') === false){
@@ -171,6 +171,8 @@ class Component_Validator implements Component, Help
         foreach ($this->validators as $validator){
             $methods = get_class_methods($validator);
             foreach ($methods as $method){
+                if (preg_match('/^__/', $method))
+                    continue;
                 $ret .= '    ' . $method
                     . " 	in " . get_class($validator) . "\n";
             }
