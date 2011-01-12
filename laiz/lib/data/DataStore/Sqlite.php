@@ -97,4 +97,19 @@ class DataStore_Sqlite implements DataStore
 
         return $this;
     }
+
+    // ==TODO== move interface
+    public function clearExpiration(){
+        $query = 'delete from ' . self::TABLE_NAME
+            . ' where expire < ?';
+        $this->orm->query($query, date('Y-m-d H:i:s'));
+        return $this;
+    }
+
+    public function deleteValue($value){
+        $query = 'delete from ' . self::TABLE_NAME
+            . ' where value = ?';
+        $ret = $this->orm->query($query, serialize($value));
+        return $this;
+    }
 }
