@@ -683,7 +683,7 @@ class Orm_Pdo implements Orm
         $pKeyVar = array_search($configs['pKey'], $configs['columns']);
         $idName = $configs['columns'][$pKeyVar];
         if (is_object($vo)){
-            if (!isset($vo->$pKeyVar) || !is_numeric($vo->$pKeyVar)){
+            if (!isset($vo->$pKeyVar) || !isset($vo->$pKeyVar)){
                 trigger_error('Not defined primary key in ' . $tableName . ' table.', E_USER_WARNING);
                 return 0;
             }
