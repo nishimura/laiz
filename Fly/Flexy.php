@@ -71,6 +71,8 @@ class Fly_Flexy
     	'compileDir' => '' , // where do you want to write to.. (defaults to session.save_path)
         'templateDir' => '' , // where are your templates
         // where the template comes from. ------------------------------------------
+        'multiSource'   => false,       // Allow same template to exist in multiple places
+                                        // So you can have user themes....
         'templateDirOrder' => '' , // set to 'reverse' to assume that first template
         'debug' => false , // prints a few messages
         // compiling conditions ------------------------------------------
@@ -218,6 +220,8 @@ class Fly_Flexy
             list ($file, $this->options['output.block']) = explode('#', $file);
         }
 
+        $tmplDirUsed = false;
+
         // PART A mulitlanguage support: ( part B is gettext support in the engine..)
         //    - user created language version of template.
         //    - compile('abcdef.html') will check for compile('abcdef.en.html')
@@ -241,9 +245,11 @@ class Fly_Flexy
                 case is_file($tmplLang):
                     $this->currentTemplate = realpath($tmplLang);
                     $file = $langFile;
+                    $tmplDirUsed = $tmplDir;
                     break;
                 case is_file($tmpl):
                     $this->currentTemplate = realpath($tmpl);
+                    $tmplDirUsed = $tmplDir;
                     break;
                 default:
                     continue 2;
@@ -266,12 +272,36 @@ class Fly_Flexy
             return true;
         }
 
+
+        // now for the compile target
+
+        //If you are working with mulitple source folders and $options['multiSource'] is set
+        //the template folder will be:
+        // compiled_tempaltes/{templatedir_basename}_{md5_of_dir}/
+
+
+        $compileSuffix = ((count($this->options['templateDir']) > 1) && $this->options['multiSource']) ?
+            DIRECTORY_SEPARATOR  .basename($tmplDirUsed) . '_' .md5($tmplDirUsed) : '';
+
+
         $compileDest = $this->options['compileDir'];
+
+        // Use a default compile directory if one has not been set.
+        if (!@$compileDest) {
+            // Use session.save_path + 'compiled_templates_' + md5(of sourcedir)
+            $compileDest = ini_get('session.save_path') .  DIRECTORY_SEPARATOR . 'flexy_compiled_templates';
+            if (!file_exists($compileDest)) {
+                require_once 'Fly/System.php';
+                System::mkdir(array('-p',$compileDest));
+            }
+        }
+
+
 
         // we generally just keep the directory structure as the application uses it,
         // so we dont get into conflict with names
         // if we have multi sources we do md5 the basedir..
-        $base = $compileDest . DIRECTORY_SEPARATOR . $file;
+        $base = $compileDest . $compileSuffix . DIRECTORY_SEPARATOR . $file;
         $fullFile = $this->compiledTemplate = $base . '.' . $this->options['locale'] . '.php';
         $this->getTextStringsFile = $base . '.gettext.serial';
         $this->elementsFile = $base . '.elements.serial';
