@@ -1,6 +1,23 @@
 <?php
+/**
+ * Utility for ini file.
+ *
+ * PHP versions 5.3
+ *
+ * @package   Laiz
+ * @author    Satoshi Nishimura <nishim314@gmail.com>
+ * @copyright 2011 Satoshi Nishimura
+ */
 
-class Laiz_Util_Inifile
+namespace laiz\lib\util;
+
+/**
+ * Utility for ini file.
+ *
+ * @package   Laiz
+ * @author    Satoshi Nishimura <nishim314@gmail.com>
+ */
+class Inifile
 {
     private $compiledFile;
     private $data;
@@ -23,8 +40,7 @@ class Laiz_Util_Inifile
     private function compiledPath($file)
     {
         $compiledFile = 'ini_' . md5($file);
-        $configs = Laiz_Configure::get('base');
-        $compiledPath = $configs['CACHE_DIR'].$compiledFile;
+        $compiledPath = Configure::getCacheDir().$compiledFile;
         return $compiledPath;
     }
 
