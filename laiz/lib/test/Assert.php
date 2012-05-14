@@ -116,7 +116,7 @@ class Assert
             ;
 
         if ($this->mode & self::VIEW_FAILURE)
-            echo `echo -e '$msg'`;
+            echo $msg;
         return $this;
     }
 
@@ -133,7 +133,7 @@ class Assert
                 . ', (' . escapeshellcmd($msg) . ')'
                 ;
 
-            echo `echo -e '$msg'`;
+            echo $msg;
         }
         return $this;
     }
@@ -169,8 +169,7 @@ class Assert
             $pattern = $colors[$color];
         }
 
-        return '\e[' . $pattern . 'm' . $str . '\e[m';
-                        
+        return "\x1b[" . $pattern . 'm' . $str . "\x1b[m\n";
     }
     public function showResult()
     {
@@ -187,6 +186,6 @@ class Assert
             . ', '
             . "Total: $t ";
         $str = $this->decorate($str, array($bg, 'white', 'bold'));
-        echo `echo -e '$str'`;
+        echo $str;
     }
 }
