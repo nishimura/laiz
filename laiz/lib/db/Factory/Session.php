@@ -20,8 +20,8 @@ class Factory_Session implements Factory, Register
      */
     public function autoload($name)
     {
-        if (preg_match('/^Laiz_Db_Vo_/', $name)){
-            $createName = str_replace('Laiz_Db_Vo_', '', $name);
+        if (preg_match('/^laiz\\\\lib\\\\db\\\\Vo_/', $name)){
+            $createName = str_replace('laiz\\lib\\db\\Vo_', '', $name);
             $createName[0] = strtolower($createName[0]);
             $dao = $this->create($createName);
             $dao->createVo($name);

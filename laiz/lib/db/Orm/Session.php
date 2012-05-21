@@ -11,7 +11,8 @@
 
 namespace laiz\lib\db;
 
-use laiz\lib\session\Session;
+use \laiz\lib\session\Session;
+use \laiz\lib\db\Vo;
 
 /**
  * O/R Mapper Mock with Session Class
@@ -39,11 +40,12 @@ class Orm_Session extends Orm_Mock
 
     public function createVo()
     {
-        $className = 'Laiz_Db_Vo_'. $this->className;
-        $dirs = Laiz_Configure::get('LaizContainer');
-        if (!class_exists($className, false)){
-            eval("class $className implements Laiz_Db_Vo{}");
+        $ns = 'laiz\\lib\\db\\';
+        $className = 'Vo_'. $this->className;
+        if (!class_exists($ns . $className, false)){
+            eval("namespace laiz\\lib\\db;\nclass $className implements Vo{}");
         }
+        $className = $ns . $className;
         return new $className();
     }
 
