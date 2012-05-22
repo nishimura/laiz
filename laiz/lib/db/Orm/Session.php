@@ -52,7 +52,10 @@ class Orm_Session extends Orm_Mock
     private function getVosFromSession()
     {
         $a = $this->s->get('__Session_Vo__');
-        return $a[$this->className];
+        if (isset($a[$this->className]))
+            return $a[$this->className];
+        else
+            return array();
     }
 
     public function getVo($where = null)
