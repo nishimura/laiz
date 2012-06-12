@@ -13,6 +13,7 @@ namespace laiz\lib\db;
 
 use \laiz\core\Configure;
 use \laiz\command\Help;
+use \laiz\autoloader\Register;
 
 /**
  * Selector of Db_Factory Class.
@@ -20,7 +21,7 @@ use \laiz\command\Help;
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
  */
-class Factory_Selector implements Factory, Help
+class Factory_Selector implements Factory, Help, Register
 {
     protected $config;
 
@@ -78,5 +79,18 @@ class Factory_Selector implements Factory, Help
         $docFile = str_replace('_Selector', '', __CLASS__);
         $docFile = str_replace('\\', '/', $docFile) . '.md';
         return file_get_contents('doc/' . $docFile, FILE_USE_INCLUDE_PATH);
+    }
+
+    /**
+     * @Override Register#autoload
+     */
+    public function autoload($name)
+    {
+        if (preg_match('/^laiz\\\\lib\\\\db\\\\Vo_/', $name)){
+            $createName = str_replace('laiz\\lib\\db\\Vo_', '', $name);
+            $createName[0] = strtolower($createName[0]);
+            $dao = $this->create($createName);
+            $dao->createVo($name);
+        }
     }
 }
