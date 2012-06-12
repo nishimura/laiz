@@ -55,6 +55,15 @@ class Component_Validator implements Component, Help
             return;
         }
 
+        if (isset($config['trigger'])){
+            if (!$this->getRequestValue($config['trigger'])){
+                return;
+            }
+            if (isset($this->result->__validatorChecked) &&
+                $this->result->__validatorChecked)
+                return;
+            $this->result->__validatorChecked = true;
+        }
         if (isset($config['errorKeyPrefix']))
             $prefix = $config['errorKeyPrefix'];
         else
