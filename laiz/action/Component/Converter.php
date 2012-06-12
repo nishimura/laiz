@@ -82,6 +82,8 @@ class Component_Converter implements Component, Help
         foreach ($this->converters as $converter){
             $methods = get_class_methods($converter);
             foreach ($methods as $method){
+                if (preg_match('/^__/', $method))
+                    continue;
                 $ret .= '    ' . $method
                     . " 	in " . get_class($converter) . "\n";
             }
