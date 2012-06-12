@@ -59,10 +59,10 @@ class Component_Validator implements Component, Help
             if (!$this->getRequestValue($config['trigger'])){
                 return;
             }
-            if (isset($this->result->__validatorChecked) &&
-                $this->result->__validatorChecked)
+            if (isset($this->result->_validatorChecked) &&
+                $this->result->_validatorChecked)
                 return;
-            $this->result->__validatorChecked = true;
+            $this->result->_validatorChecked = true;
         }
         if (isset($config['errorKeyPrefix']))
             $prefix = $config['errorKeyPrefix'];
@@ -74,7 +74,7 @@ class Component_Validator implements Component, Help
         else
             $defaultStop = false;
 
-        $valid = false;
+        $invalid = false;
         $data = $this->parser->parse($config['file']);
         if (!$data){
             trigger_error('ini file parsing failed: ' . $config['file'],
@@ -128,7 +128,7 @@ class Component_Validator implements Component, Help
 
                 $ok = call_user_func_array($callback, $args);
                 if (!$ok){
-                    $valid = true;
+                    $invalid = true;
                     if (strpos($argName, '.') === false){
                         $errorKey = $prefix . ucfirst($argName);
                     }else{
@@ -142,11 +142,11 @@ class Component_Validator implements Component, Help
 
             }
 
-            if ($valid && $stop)
+            if ($invalid && $stop)
                 break;
         }
 
-        if ($valid){
+        if ($invalid){
             if (isset($config['errorMessage'], $config['errorMessageKey']))
                 $this->result->{$config['errorMessageKey']} = $config['errorMessage'];
             return 'action:' . $config['errorAction'];
