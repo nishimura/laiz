@@ -589,7 +589,7 @@ class Orm_Pdo implements Orm
         }
 
         if (!($vo instanceof Vo)){
-            trigger_error("$vo is not Laiz_Db_Vo object.", E_USER_WARNING);
+            trigger_error("$vo is not laiz\lib\db\Vo object.", E_USER_WARNING);
             return false;
         }
 
