@@ -129,28 +129,28 @@ class Component_Validator implements Component, Help
                 }
                 if (!$hit)
                     trigger_error("Not found $method validator", E_USER_WARNING);
+                $empty = true;
                 $args = (array)$this->getRequestValue($argName);
+                if (count($args) > 0 &&
+                    $args[0] !== null &&
+                    trim($args[0]) !== '')
+                    $empty = false;
                 if ($argsStr){
                     // arguments: ex. "(3, 4)"
                     $a = trim($argsStr, '()');
                     $a = explode(',', $a);
                     foreach ($a as $v){
                         $v = trim($v);
-                        if ($v[0] === '$')
+                        if ($v[0] === '$'){
                             $v = $this->getRequestValue(ltrim($v, '$'));
+                            if ($v !== null && trim($v) !== '')
+                                $empty = false;
+                        }
                         $args[] = $v;
                     }
                 }
-                if ($method !== 'required'){
-                    $empty = true;
-                    foreach ($args as $a){
-                        if ($a !== null && trim($a) !== ''){
-                            $empty = false;
-                            break;
-                        }
-                    }
-                    if ($empty)
-                        continue;
+                if ($method !== 'required' && $empty){
+                    continue;
                 }
 
                 $ok = call_user_func_array($callback, $args);
