@@ -125,6 +125,17 @@ class Component_Validator implements Component, Help
                         $args[] = $v;
                     }
                 }
+                if ($method !== 'required'){
+                    $empty = true;
+                    foreach ($args as $a){
+                        if ($a !== null && trim($a) !== ''){
+                            $empty = false;
+                            break;
+                        }
+                    }
+                    if ($empty)
+                        continue;
+                }
 
                 $ok = call_user_func_array($callback, $args);
                 if (!$ok){
