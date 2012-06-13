@@ -60,6 +60,12 @@ class Laiz
 
         /* start controller of laiz framework */
         $controller = new Controller();
-        $controller->execute();
+        try {
+            $controller->execute();
+        }catch (Exception $e){
+            trigger_error($e->getMessage() . ' in ' .
+                          $e->getFile() . ':' . $e->getLine(),
+                          E_USER_ERROR);
+        }
     }
 }
