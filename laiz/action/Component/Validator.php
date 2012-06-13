@@ -130,9 +130,8 @@ class Component_Validator implements Component, Help
                 if (!$hit)
                     trigger_error("Not found $method validator", E_USER_WARNING);
                 $empty = true;
-                $args = (array)$this->getRequestValue($argName);
-                if (count($args) > 0 &&
-                    $args[0] !== null &&
+                $args = array($this->getRequestValue($argName));
+                if ($args[0] !== null &&
                     trim($args[0]) !== '')
                     $empty = false;
                 if ($argsStr){
@@ -149,7 +148,7 @@ class Component_Validator implements Component, Help
                         $args[] = $v;
                     }
                 }
-                if ($method !== 'required' && $empty){
+                if (strpos($method, 'required') !== 0 && $empty){
                     continue;
                 }
 
