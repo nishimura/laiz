@@ -14,6 +14,7 @@ namespace laiz\action;
 use \laiz\lib\aggregate\laiz\action\Validators;
 use \laiz\parser\Ini;
 use \laiz\command\Help;
+use \laiz\core\Configure;
 
 /**
  * Class of parsing validator section in setting file.
@@ -38,6 +39,7 @@ class Component_Validator implements Component, Help
     /** @var laiz\action\Validator_Result */
     private $result;
 
+    private $handleByMethod;
     public function __construct(Validators $validators, Ini $parser
                                 , Request $req, Validator_Result $res)
     {
@@ -45,13 +47,24 @@ class Component_Validator implements Component, Help
         $this->parser  = $parser;
         $this->request = $req;
         $this->result  = $res;
+
+        $config = Configure::get('laiz.action.Validator');
+        $this->handleByMethod = (boolean) $config['handleByMethod'];
     }
 
     // ==TODO== refactoring
     public function run(Array $config)
     {
-        if (!isset($config['file'], $config['errorAction'])){
-            trigger_error('file section and errorAction sections are required in ini config file.');
+        if (!isset($config['file'])){
+            trigger_error('file section are required in ini config file.');
+            return;
+        }
+        if (!$this->handleByMethod && !isset($config['errorAction'])){
+            trigger_error('errorAction section are required in ini config file.');
+            return;
+        }
+        if ($this->handleByMethod && !isset($config['trigger'])){
+            trigger_error('trigger section are required in ini config file.');
             return;
         }
 
@@ -79,7 +92,10 @@ class Component_Validator implements Component, Help
         if (!$data){
             trigger_error('ini file parsing failed: ' . $config['file'],
                           E_USER_WARNING);
-            return 'action:' . $config['errorAction'];
+            if ($this->handleByMethod)
+                return;
+            else
+                return 'action:' . $config['errorAction'];
         }
 
         foreach ($data as $argName => $lines){
@@ -158,10 +174,15 @@ class Component_Validator implements Component, Help
         }
 
         if ($invalid){
+            $this->result->_success = false;
             if (isset($config['errorMessage'], $config['errorMessageKey']))
                 $this->result->{$config['errorMessageKey']} = $config['errorMessage'];
-            return 'action:' . $config['errorAction'];
+            if ($this->handleByMethod)
+                return;
+            else
+                return 'action:' . $config['errorAction'];
         }else{
+            $this->result->_success = true;
             return;
         }
     }

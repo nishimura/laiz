@@ -11,6 +11,9 @@
 
 namespace laiz\action;
 
+use \laiz\action\Validator_Result;
+use \laiz\core\Configure;
+
 /**
  * Class of filter component.
  * 
@@ -21,16 +24,17 @@ namespace laiz\action;
 class Component_Action implements Component
 {
     private $response;
+    private $validatorResult;
 
-    public function __construct(Response $res)
+    public function __construct(Response $res, Validator_Result $vr)
     {
         $this->response = $res;
+        $this->validatorResult = $vr;
     }
 
     public function run(Array $config)
     {
         $actionName = $config['actionName'];
-        $methodName = $config['methodName'];
 
         $fileExists = false;
         $classPath = str_replace('_', '/', $actionName);
@@ -44,6 +48,18 @@ class Component_Action implements Component
         if (!$fileExists)
             return;
 
+        $methodName = $config['methodName'];
+
+        $config = Configure::get('laiz.action.Validator');
+        $handleByMethod = (boolean) $config['handleByMethod'];
+        if ($handleByMethod){
+            if (isset($this->validatorResult->_success)){
+                if ($this->validatorResult->_success)
+                    $methodName = 'valid';
+                else
+                    $methodName = 'invalid';
+            }
+        }
         $ret = Component_Runner::run($actionName, $config, $methodName);
         if (isset($config['result']['*']) && !$ret)
             $ret = 'action:' . $config['result']['*'];
