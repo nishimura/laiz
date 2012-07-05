@@ -34,32 +34,7 @@ class Mail extends Base
         $this->ERROR_LOG_MAIL        = $args['ERROR_LOG_MAIL'];
         $this->ERROR_LOG_MAIL_FROM   = $args['ERROR_LOG_MAIL_FROM'];
 
-        $this->initLevel($this->LAIZ_ERROR_MAIL_LEVE);
-    }
-
-    /**
-     * インスタンスを返却
-     *
-     * @return LaizErrorUtilsMail
-     * @access public
-     */
-    static public function getInstance($args = array()){
-        if (self::$instance === null){
-            $c = __CLASS__;
-            self::$instance = new $c($args);
-            self::$instance->_init();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * ログレベルの設定
-     *
-     * @access private
-     */
-    private function _init(){
-        parent::init($this->LAIZ_ERROR_MAIL_LEVEL);
+        $this->initLevel($this->LAIZ_ERROR_MAIL_LEVEL);
     }
 
     /**

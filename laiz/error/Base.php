@@ -28,8 +28,8 @@ abstract class Base
     /** @var string[] エラー出力文字列 */
     protected $levelTag = array();
 
-    final private function __construct($args){
-        static::init($args);
+    final public function __construct($args){
+        $this->init($args);
     }
 
     // must call initLevel($level)

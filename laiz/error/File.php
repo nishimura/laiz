@@ -38,31 +38,6 @@ class File extends Base
     }
     
     /**
-     * インスタンスを返却
-     *
-     * @return LaizErrorUtilsMail
-     * @access public
-     */
-    static public function getInstance($args = array()){
-        if (self::$instance === null){
-            $c = __CLASS__;
-            self::$instance = new $c($args);
-            self::$instance->_init();
-        }
-
-        return self::$instance;
-    }
-    
-    /**
-     * ログレベルの設定
-     *
-     * @access private
-     */
-    private function _init(){
-        parent::init($this->LAIZ_ERROR_FILE_LEVEL);
-    }
-
-    /**
      * エラーをファイルに出力
      *
      * @param string[] $backTrace
@@ -82,6 +57,4 @@ class File extends Base
         
         error_log($msg, 3, $this->ERROR_LOG_DIR . date('Y-m-d') . '.log');
     }
-    
 }
-
