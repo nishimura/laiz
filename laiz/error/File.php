@@ -6,13 +6,13 @@
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
- * @copyright 2005-2010 Satoshi Nishimura
+ * @copyright 2005-2012 Satoshi Nishimura
  */
 
 namespace laiz\error;
 
 /**
- * ファイル用エラー関連処理クラス
+ * Error file class.
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
@@ -23,22 +23,19 @@ class File extends Base
     static protected $instance;
 
     /** @var string log directory */
-    private $ERROR_LOG_DIR;
+    private $dir;
     /** @var bool */
-    private $ERROR_LOG_TRACE;
-    /** @var int error level */
-    private $LAIZ_ERROR_FILE_LEVEL;
+    private $trace;
 
     protected function init($args){
-        $this->ERROR_LOG_DIR = $args['ERROR_LOG_DIR'];
-        $this->ERROR_LOG_TRACE = $args['ERROR_LOG_TRACE'];
-        $this->LAIZ_ERROR_FILE_LEVEL = $args['LAIZ_ERROR_FILE_LEVEL'];
+        $this->dir = $args['ERROR_LOG_DIR'];
+        $this->trace = $args['ERROR_LOG_TRACE'];
 
-        $this->initLevel($this->LAIZ_ERROR_FILE_LEVEL);
+        $this->initLevel($args['LAIZ_ERROR_FILE_LEVEL']);
     }
     
     /**
-     * エラーをファイルに出力
+     * write log file
      *
      * @param string[] $backTrace
      * @access protected
@@ -48,13 +45,13 @@ class File extends Base
         $head = array_shift($backTrace);
         $msg = "$date $head\n";
 
-        if ($this->ERROR_LOG_TRACE){
-            // バックトレース結果の追加
+        if ($this->trace){
+            // add all trace
             foreach ($backTrace as $b){
                 $msg .= "  $b\n";
             }
         }
         
-        error_log($msg, 3, $this->ERROR_LOG_DIR . date('Y-m-d') . '.log');
+        error_log($msg, 3, $this->dir . date('Y-m-d') . '.log');
     }
 }
