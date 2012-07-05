@@ -6,13 +6,13 @@
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
- * @copyright 2005-2010 Satoshi Nishimura
+ * @copyright 2005-2012 Satoshi Nishimura
  */
 
 namespace laiz\error;
 
 /**
- * メール用エラー関連処理クラス
+ * Error mail class.
  *
  * @package   Laiz
  * @author    Satoshi Nishimura <nishim314@gmail.com>
@@ -22,23 +22,23 @@ class Mail extends Base
     /** @var Object singleton instance */
     static protected $instance;
 
-    /** @var int error level */
-    private $LAIZ_ERROR_MAIL_LEVEL;
     /** @var string mail address */
-    private $ERROR_LOG_MAIL;
+    private $to;
     /** @var string mail address */
-    private $ERROR_LOG_MAIL_FROM;
+    private $from;
+    /** @var string title */
+    private $title;
 
     protected function init($args){
-        $this->LAIZ_ERROR_MAIL_LEVEL = $args['LAIZ_ERROR_MAIL_LEVEL'];
-        $this->ERROR_LOG_MAIL        = $args['ERROR_LOG_MAIL'];
-        $this->ERROR_LOG_MAIL_FROM   = $args['ERROR_LOG_MAIL_FROM'];
+        $this->to    = $args['ERROR_LOG_MAIL'];
+        $this->from  = $args['ERROR_LOG_MAIL_FROM'];
+        $this->title = $args['ERROR_LOG_MAIL_TITLE'];
 
-        $this->initLevel($this->LAIZ_ERROR_MAIL_LEVEL);
+        $this->initLevel($args['LAIZ_ERROR_MAIL_LEVEL']);
     }
 
     /**
-     * メール送信処理
+     * send mail
      *
      * @param string[] $backTrace
      * @access private
@@ -47,21 +47,22 @@ class Mail extends Base
         $head = array_shift($backTrace);
         $msg = implode("\n", $backTrace);
 
-        // ヘッダをタイトルにするには長すぎるので
+        // set fixed title because header is too long
         $msg = $head . "\n\n" . $msg;
-        $head = "PHP ERROR MAIL";
+        $head = $this->title;
 
-        // 差出人設定
-        $params = '-f' . $this->ERROR_LOG_MAIL_FROM;
-        $headers = 'From: ' . $this->ERROR_LOG_MAIL_FROM;
-        // エンコーディング設定
+        // set envelope from
+        $params = '-f' . $this->from;
+        $headers = 'From: ' . $this->from;
+        // set japanese encoding
+        // TODO: setting in config.ini
         $headers .= "\nContent-Type: text/plain; charset=ISO-2022-JP";
         $headers .= "\nContent-Transfer-Encoding: 7bit";
 
-        // リクエスト情報を付加
+        // additional information
         $msg .= "\n\n" . var_export($_REQUEST, true);
 
-        foreach (explode(',', $this->ERROR_LOG_MAIL) as $mail){
+        foreach (explode(',', $this->to) as $mail){
             mb_send_mail(trim($mail), $head, $msg, $headers, $params);
         }
     }
