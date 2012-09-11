@@ -29,7 +29,7 @@ abstract class Response
     public function addObject($obj)
     {
         if (!is_object($obj))
-            trigger_errro("$obj is not Object.", E_USER_WARNING);
+            trigger_error("$obj is not Object.", E_USER_WARNING);
 
         $this->objects[] = $obj;
         return $this;
