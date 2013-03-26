@@ -14,6 +14,7 @@ namespace laiz\view;
 use \StdClass;
 use \laiz\builder\Container;
 use \Fly_Flexy;
+use \Fly_Flexy_Element;
 use \laiz\core\Configure;
 
 /**
@@ -148,6 +149,7 @@ class Flexy extends Template
          */
         // ビジネスロジックで設定されたフォーム値の取得
         $objectVars = get_object_vars($obj);
+        $checkboxes = array();
         foreach ($this->_elements as $key => $element){
             if (!isset($element->tag)){ continue; }
 
@@ -163,6 +165,14 @@ class Flexy extends Template
                     $objectVars[$key] = $objectVars[$tmpKey];
                     unset($objectVars[$tmpKey]);
                 }else{
+                    if (isset($element->attributes['type']) &&
+                        $element->attributes['type'] === 'checkbox' &&
+                        is_array($objectVars[$element->attributes['name']]) &&
+                        !isset($checkboxes[$element->attributes['name']])){
+                        // checkbox array
+                        $checkboxes[] = $element->attributes['name'];
+                    }
+
                     // アクションにプロパティが存在しない場合は何もしない
                     continue;
                 }
@@ -170,6 +180,11 @@ class Flexy extends Template
             //var_dump($key);
             // valueの設定
             $this->_setTagValue($this->_elements[$key], $objectVars[$key]);
+        }
+
+        foreach ($checkboxes as $name){
+            $this->_elements[$name] = new Fly_Flexy_Element('input');
+            $this->_setTagValue($this->_elements[$name], $objectVars[$name]);
         }
     }
 
